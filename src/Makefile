@@ -8,7 +8,7 @@ LDFLAGS=
 
 CXXFLAGS=-g -O2 -I/usr/include/freetype2 -I/usr/include/libpng16  -I/usr/include/freetype2 -I/usr/include/libpng16  -I/usr/include/freetype2 -I/usr/include/libpng16  -Wall
 
-OBJECTS	= Border.o Buttons.o Channel.o Client.o Config.o Events.o Main.o Manager.o Menu.o Rotated.o Session.o
+OBJECTS	= Border.o Buttons.o Channel.o Client.o Config.o Events.o Main.o Manager.o Menu.o Rotated.o
 
 .c.o:
 	$(CCC) -c $(CXXFLAGS) $<
@@ -61,4 +61,3 @@ Manager.o: Manager.c Manager.h General.h Config.h listmacro.h Menu.h \
 Menu.o: Menu.c Menu.h General.h Config.h Manager.h listmacro.h \
  Client.h Border.h Rotated.h
 Rotated.o: Rotated.c Config.h Rotated.h
-Session.o: Session.c Manager.h General.h Config.h listmacro.h

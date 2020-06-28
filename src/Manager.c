@@ -68,9 +68,6 @@ implementList(AtomList, Atom);
 
 WindowManager::WindowManager(int argc, char **argv) :
     m_focusChanging(False),
-#ifdef CONFIG_USE_SESSION_MANAGER
-    m_smFD(-1),
-#endif
     m_altPressed(False),
     m_altStateRetained(False),
     m_netwmCheckWin(0),
@@ -99,27 +96,14 @@ WindowManager::WindowManager(int argc, char **argv) :
             );
 
     int i, j;
-#if CONFIG_USE_SESSION_MANAGER != False
-    char *oldSessionId = 0;
-#endif
     
     if (argc > 1) {
-
-#if CONFIG_USE_SESSION_MANAGER != False
-        // Damn!  This means we have to support a command-line argument
-        if (argc == 3 && !strcmp(argv[1], "--sm-client-id")) {
-            oldSessionId = argv[2];
-        } else {
-#endif
 
         for (i = strlen(argv[0])-1; i > 0 && argv[0][i] != '/'; --i);
         fprintf(stderr, "\nwmx: Usage: %s [--sm-client-id id]\n",
                 argv[0] + (i > 0) + i);
         exit(2);
 
-#if CONFIG_USE_SESSION_MANAGER != False
-        }
-#endif
     }
 
     if (!setlocale(LC_ALL, ""))
@@ -169,12 +153,6 @@ WindowManager::WindowManager(int argc, char **argv) :
         fprintf(stderr, "\n     All clients on menu.");
     } else {
         fprintf(stderr, "\n     Hidden clients only on menu.");
-    }
-
-    if (CONFIG_USE_SESSION_MANAGER) {
-        fprintf(stderr, "  Using session manager.");
-    } else {
-        fprintf(stderr, "  No session manager.");
     }
 
     if (CONFIG_PROD_SHAPE) {
@@ -350,10 +328,6 @@ WindowManager::WindowManager(int argc, char **argv) :
     XSync(m_display, False);
     m_initialising = False;
     m_returnCode = 0;
-
-#if CONFIG_USE_SESSION_MANAGER != False
-    initialiseSession(argv[0], oldSessionId);
-#endif
 
     netwmInitialiseCompliance();
 
@@ -1066,27 +1040,6 @@ void WindowManager::updateStackingOrder()
         }
     }
      
-#if 0   
-    /******************************/
-    /*****  TAKE THIS OUT!!!  *****/
- 
-    {
-        int count = 0;
-        for(Window* i=windows; i<windowIter; ++i) {
-            for(Window* j=windows; j<windowIter; ++j) {
-                if(i!=j && *i==*j) {
-                    count++;
-                }
-            }
-        }
-        if(count!=0)
-            fprintf(stderr, "wmx: %d duplicate windows in stacking list\n", count);
-    }
-    
-    /*****  TAKE THIS OUT!!!  *****/    
-    /******************************/
-#endif
-    
     XRestackWindows(display(), windows, windowIter-windows);
     
     delete[] windows;

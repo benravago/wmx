@@ -5,12 +5,6 @@
 #include <X11/keysym.h>
 #include <sys/time.h>
 
-#if CONFIG_WANT_SUNKEYS
-#if CONFIG_WANT_SUNPOWERKEY
-#include <X11/Sunkeysym.h>
-#endif
-#endif
-
 void WindowManager::eventButton(XButtonEvent *e, XEvent *ev)
 {
     enum {Vertical, Maximum, Horizontal};
@@ -198,61 +192,6 @@ void WindowManager::eventKeyPress(XKeyEvent *ev)
             m_altPressed = True;
             m_altStateRetained = False;
         }
-
-#if CONFIG_WANT_SUNKEYS
-#ifdef CONFIG_QUICKRAISE_KEY
-        if (key == CONFIG_QUICKRAISE_KEY && c) {
-
-            if (isTop(c) && (CONFIG_QUICKRAISE_ALSO_LOWERS == True)) {
-                c->lower();
-            } else {
-                c->mapRaised();
-            }
-            
-        } else
-#endif // CONFIG_QUICKRAISE_KEY
-#ifdef CONFIG_QUICKHIDE_KEY
-        if (key == CONFIG_QUICKHIDE_KEY && c) {
-            c->hide();
-              
-        } else 
-#endif // CONFIG_QUICKHIDE_KEY
-#ifdef CONFIG_QUICKCLOSE_KEY
-        if (key == CONFIG_QUICKCLOSE_KEY && c) {
-            c->kill();
-
-        } else
-#endif // CONFIG_QUICKCLOSE_KEY
-#ifdef CONFIG_QUICKHEIGHT_KEY
-        if (key == CONFIG_QUICKHEIGHT_KEY && c) {
-
-            if (c->isFullHeight()) {
-                c->unmaximise(Vertical);
-            } else {
-                c->maximise(Vertical);
-            }
-
-        } else
-#endif // CONFIG_QUICKHEIGHT_KEY
-#if CONFIG_WANT_SUNPOWERKEY
-          if (key == SunXK_PowerSwitch) {
-           pid_t pid = fork();
-           if(pid == 0)
-           {
-               execl(CONFIG_SUNPOWER_EXEC,CONFIG_SUNPOWER_EXEC,
-                     CONFIG_SUNPOWER_OPTIONS, NULL);
-           }
-
-       } else if (key == SunXK_PowerSwitchShift) {
-           pid_t pid = fork();
-           if(pid == 0)
-           {
-               execl(CONFIG_SUNPOWER_EXEC,CONFIG_SUNPOWER_EXEC,
-                     CONFIG_SUNPOWER_SHIFTOPTIONS, NULL);
-           }
-       } else
-#endif // CONFIG_WANT_SUNPOWERKEY
-#endif // CONFIG_WANT_SUNKEYS
 
        if (ev->state & m_altModMask) {
 

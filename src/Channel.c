@@ -136,8 +136,7 @@ void WindowManager::flipChannel(Boolean statusOnly, Boolean flipDown,
     }
 
     m_currentChannel = nextChannel;
-    m_channelChangeTime = timestamp(True) +
-        (quickFlip ? CONFIG_QUICK_FLIP_DELAY : CONFIG_FLIP_DELAY);
+    m_channelChangeTime = timestamp(True) + CONFIG_FLIP_DELAY;
 
     netwmUpdateChannelList();
 }

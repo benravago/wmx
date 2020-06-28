@@ -274,24 +274,6 @@ void Client::manage(Boolean mapped)
             }
         }
 
-        keycode = XKeysymToKeycode(display(), CONFIG_QUICKRAISE_KEY);
-        if (keycode) {
-            XGrabKey(display(), keycode, AnyModifier, m_window, True,
-                     GrabModeAsync, GrabModeAsync);
-        }
-
-        keycode = XKeysymToKeycode(display(), CONFIG_QUICKHIDE_KEY);
-        if (keycode) {
-            XGrabKey(display(), keycode, AnyModifier, m_window, True,
-                     GrabModeAsync, GrabModeAsync);
-        }
-
-        keycode = XKeysymToKeycode(display(), CONFIG_QUICKHEIGHT_KEY);
-        if (keycode) {
-            XGrabKey(display(), keycode, AnyModifier, m_window, True,
-                     GrabModeAsync, GrabModeAsync);
-        }
-
         if (CONFIG_USE_CHANNEL_KEYS) {
             for (i = 0; i < 12; ++i) {
                 keycode = XKeysymToKeycode(display(), XK_F1 + i);

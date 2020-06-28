@@ -161,24 +161,6 @@ private:
     Boolean m_focusPointerNowStill;
     void checkDelaysForFocus();
 
-#if CONFIG_USE_SESSION_MANAGER != False
-    int m_smFD;
-    IceConn m_smIceConnection;
-    SmcConn m_smConnection;
-    char *m_oldSessionId;
-    char *m_newSessionId;
-    char *m_sessionProgram;
-
-    static void smWatchFD(IceConn c, IcePointer, Bool, IcePointer *);
-    static void smSaveYourself(SmcConn, SmPointer, int, Bool, int, Bool);
-    static void smShutdownCancelled(SmcConn, SmPointer);
-    static void smSaveComplete(SmcConn, SmPointer);
-    static void smDie(SmcConn, SmPointer);
-
-    void initialiseSession(char *sessionProgram, char *oldSessionId);
-    void setSessionProperties();
-#endif
-
     void nextEvent(XEvent *);   // return
 
     void eventButton(XButtonEvent *, XEvent *);

@@ -161,12 +161,6 @@ private:
 
 #define CONFIG_RAISELOWER_ON_CLICK      False
 
-// If USE_SESSION_MANAGER is True, and you have an Xsmc session
-// manager running, wmx will respond to session manager callbacks and
-// notify the session manager of its restart command.
-
-#define CONFIG_USE_SESSION_MANAGER      True
-
 // Specify the maximum length of an entry in the client menu or the command
 // menu. Set this to zero if you want no limitation
 
@@ -228,19 +222,6 @@ private:
 #define CONFIG_MENU_DOWN_KEY    XK_Down
 #define CONFIG_MENU_SELECT_KEY  XK_Return
 #define CONFIG_MENU_CANCEL_KEY  XK_Escape
-
-// Useful for fortunate people with Sun Type-5 keyboards.  These don't
-// require the modifier to be pressed.
-#define CONFIG_WANT_SUNKEYS     True
-#define CONFIG_WANT_SUNPOWERKEY True
-#define CONFIG_QUICKRAISE_KEY   XK_F15
-#define CONFIG_QUICKHIDE_KEY    XK_F17
-#define CONFIG_QUICKHEIGHT_KEY  XK_F13
-#define CONFIG_QUICKCLOSE_KEY   XK_F11
-#define CONFIG_QUICKRAISE_ALSO_LOWERS True 
-#define CONFIG_SUNPOWER_EXEC    "/usr/openwin/bin/sys-suspend"
-#define CONFIG_SUNPOWER_OPTIONS "-x","-h",0
-#define CONFIG_SUNPOWER_SHIFTOPTIONS    "-x","-n",0
 
 // Mouse Configuration
 // Use this section to remap your mouse button actions.
@@ -353,7 +334,6 @@ private:
 // the Alt-Fn keys or mouse wheel.  Milliseconds.
 
 #define CONFIG_FLIP_DELAY         1000
-#define CONFIG_QUICK_FLIP_DELAY   500
 
 // Set MAD_FEEDBACK for skeletal representations of windows when
 // flicking through the client menu and changing channels.  The DELAY
