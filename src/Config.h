@@ -161,16 +161,6 @@ private:
 
 #define CONFIG_RAISELOWER_ON_CLICK      False
 
-// If USE_WINDOW_GROUPS is True, then if an application marks a mapped
-// window as a group leader, when iconified, moved between desktops,
-// killed etc, the leader will take all the rest of its window group
-// with it.  Very few applications make any use of this -- indeed I
-// haven't found any to test it on yet, so it probably doesn't work.
-// This is different from the group stuff from Henri Naccache to be
-// found further down this file
-
-#define CONFIG_USE_WINDOW_GROUPS        True
-
 // If USE_SESSION_MANAGER is True, and you have an Xsmc session
 // manager running, wmx will respond to session manager callbacks and
 // notify the session manager of its restart command.
@@ -381,20 +371,6 @@ private:
 // Y < 0 top,  Y > 0 bottom, Y = 0 center
 #define CONFIG_GEOMETRY_X_POS     0
 #define CONFIG_GEOMETRY_Y_POS     0
-
-// Groups are fun. you can bind a bunch of windows to a number key
-// and when you press CONFIG_ALT_KEY_MASK and the number key
-// all the windows of that group are raised.
-
-// You bind a window to a group by pressing the 
-// CONFIG_ALT_KEY_MASK + CONFIG_GROUP_ADD + a number key
-
-// if you press CONFIG_ALT_KEY_MASK + CONFIG_GROUP_REMOVE_ALL
-// + a number key that group is cleared of all windows.
-
-#define CONFIG_GROUPS             False
-#define CONFIG_GROUP_ADD          ControlMask  
-#define CONFIG_GROUP_REMOVE_ALL   ShiftMask
 
 #endif
 

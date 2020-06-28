@@ -616,27 +616,6 @@ void WindowManager::eventDestroy(XDestroyWindowEvent *e)
 
         int there = -1;
 
-#if CONFIG_GROUPS != False
-        for (int y = 0; y < 10; y++) {
-            there = -1;
-//          fprintf(stderr, "y = %d : ", y);
-
-            for (int i = 0; i < grouping.item(y)->count(); i++) {
-//              fprintf(stderr, "'%d %d %d'", i, 
-//                      grouping.item(y)->item(i),
-//                      c );
-                if (grouping.item(y)->item(i) == c) {
-//                  fprintf(stderr, "removing client from %d at %d\n", y, i);
-                    there = i;
-                }
-            }
-            if (there != -1) {
-                grouping.item(y)->remove(there);
-            }
-//          fprintf(stderr,"\n");
-        }
-#endif
-
         checkChannel(c->channel());
         c->release();
 

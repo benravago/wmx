@@ -274,78 +274,6 @@ void Client::manage(Boolean mapped)
             }
         }
 
-#if CONFIG_GROUPS != False
-        static KeySym numbers[] = {
-            XK_0, XK_1, XK_2, XK_3, XK_4, XK_5, XK_5, 
-            XK_6, XK_7, XK_8, XK_9 };
-
-        for (i = 0; i < (int)(sizeof(numbers)/sizeof(numbers[0])); ++i) {
-            keycode = XKeysymToKeycode(display(), numbers[i]);
-            if (keycode) {
-                // someone please tell me there is a better way of 
-                // doing this....
-
-                // both caps-lock and num-lock
-                XGrabKey(display(), keycode,
-                         m_windowManager->altModMask()|CONFIG_GROUP_REMOVE_ALL|
-                         LockMask|Mod2Mask,
-                         m_window, True,
-                         GrabModeAsync, GrabModeAsync);
-                XGrabKey(display(), keycode,
-                         m_windowManager->altModMask()|CONFIG_GROUP_ADD|
-                         LockMask|Mod2Mask,
-                         m_window, True,
-                         GrabModeAsync, GrabModeAsync);
-                XGrabKey(display(), keycode,
-                         m_windowManager->altModMask()|LockMask|Mod2Mask,
-                         m_window, True,
-                         GrabModeAsync, GrabModeAsync);
-
-                // only caps-lock
-                XGrabKey(display(), keycode,
-                         m_windowManager->altModMask()|CONFIG_GROUP_REMOVE_ALL|
-                         LockMask,
-                         m_window, True,
-                         GrabModeAsync, GrabModeAsync);
-                XGrabKey(display(), keycode,
-                         m_windowManager->altModMask()|CONFIG_GROUP_ADD|LockMask,
-                         m_window, True,
-                         GrabModeAsync, GrabModeAsync);
-                XGrabKey(display(), keycode,
-                         m_windowManager->altModMask()|LockMask,
-                         m_window, True,
-                         GrabModeAsync, GrabModeAsync);
-                // only num-lock
-                XGrabKey(display(), keycode,
-                         m_windowManager->altModMask()|CONFIG_GROUP_REMOVE_ALL|
-                         Mod2Mask,
-                         m_window, True,
-                         GrabModeAsync, GrabModeAsync);
-                XGrabKey(display(), keycode,
-                         m_windowManager->altModMask()|CONFIG_GROUP_ADD|Mod2Mask,
-                         m_window, True,
-                         GrabModeAsync, GrabModeAsync);
-                XGrabKey(display(), keycode,
-                         m_windowManager->altModMask()|Mod2Mask,
-                         m_window, True,
-                         GrabModeAsync, GrabModeAsync);
-                // no locks
-                XGrabKey(display(), keycode,
-                         m_windowManager->altModMask()|CONFIG_GROUP_REMOVE_ALL,
-                         m_window, True,
-                         GrabModeAsync, GrabModeAsync);
-                XGrabKey(display(), keycode,
-                         m_windowManager->altModMask()|CONFIG_GROUP_ADD,
-                         m_window, True,
-                         GrabModeAsync, GrabModeAsync);
-                XGrabKey(display(), keycode,
-                         m_windowManager->altModMask(),
-                         m_window, True,
-                         GrabModeAsync, GrabModeAsync);
-
-            }
-        }
-#endif
         keycode = XKeysymToKeycode(display(), CONFIG_QUICKRAISE_KEY);
         if (keycode) {
             XGrabKey(display(), keycode, AnyModifier, m_window, True,
@@ -389,13 +317,6 @@ void Client::manage(Boolean mapped)
     fprintf(stderr, "managing client, name = \"%s\"\n", m_name);
 
     hints = XGetWMHints(d, m_window);
-
-#if CONFIG_USE_WINDOW_GROUPS != False
-    m_groupParent = hints ? hints->window_group : None;
-    if (m_groupParent == None) m_groupParent = m_window;
-    fprintf(stderr, "Client %p (%s) has window %lx and groupParent %lx\n",
-            this, m_name, m_window, m_groupParent);
-#endif
 
     if (!getState(&state)) {
         state = hints ? hints->initial_state : NormalState;
@@ -1163,11 +1084,6 @@ void Client::hide()
     setState(IconicState);
     windowManager()->addToHiddenList(this);
 
-#if CONFIG_USE_WINDOW_GROUPS != False
-    if (isGroupParent()) {
-        windowManager()->hideGroup(groupParent(), this);
-    }
-#endif
 }
 
 
@@ -1197,11 +1113,6 @@ void Client::unhide(Boolean map)
         else if (CONFIG_CLICK_TO_FOCUS || isFocusOnClick()) activate();
     }
 
-#if CONFIG_USE_WINDOW_GROUPS != False
-    if (isGroupParent()) {
-        windowManager()->unhideGroup(groupParent(), this, map);
-    }
-#endif
 }
 
 
@@ -1239,12 +1150,6 @@ void Client::withdraw(Boolean changeState)
         XRemoveFromSaveSet(display(), m_window);
         setState(WithdrawnState);
     }
-
-#if CONFIG_USE_WINDOW_GROUPS != False
-    if (isGroupParent()) {
-        windowManager()->withdrawGroup(groupParent(), this, changeState);
-    }
-#endif
 
     ignoreBadWindowErrors = True;
     XSync(display(), False);
@@ -1296,11 +1201,6 @@ void Client::kill()
         XKillClient(display(), m_window);
     }
 
-#if CONFIG_USE_WINDOW_GROUPS != False
-    if (isGroupParent()) {
-        windowManager()->killGroup(groupParent(), this);
-    }
-#endif
 }
 
 

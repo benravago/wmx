@@ -8,10 +8,6 @@
 class Client;
 declarePList(ClientList, Client);
 
-#if CONFIG_GROUPS != False
-declarePList(ListList, ClientList);
-#endif
-
 class WindowManager {
 public:
     WindowManager(int argc, char **argv);
@@ -47,14 +43,6 @@ public:
     enum RootCursor {
         NormalCursor, DeleteCursor, DownCursor, RightCursor, DownrightCursor
     };
-
-#if CONFIG_USE_WINDOW_GROUPS
-    void withdrawGroup(Window groupParent, Client *omit,
-                       Boolean changeState = True);
-    void hideGroup(Window groupParent, Client *omit);
-    void unhideGroup(Window groupParent, Client *omit, Boolean map);
-    void killGroup(Window groupParent, Client *omit);
-#endif
 
     void installCursor(RootCursor);
     void installCursorOnWindow(RootCursor, Window);
@@ -93,10 +81,6 @@ public:
     // for exposures during client grab, and window map/unmap/destroy
     // during menu display:
     void dispatchEvent(XEvent *);
-
-#if CONFIG_GROUPS != False
-    void windowGrouping(XKeyEvent *ev, KeySym key, Client *c);
-#endif
 
     // debug output:
     void printClientList();
@@ -139,10 +123,6 @@ private:
                                     // One list for each netwm/MWM layer
                                     // Layer 4 (NORMAL_LAYER) is the default.
     Client *m_activeClient;
-
-#if CONFIG_GROUPS != False
-    ListList grouping;
-#endif
 
     int m_shapeEvent;
     int m_currentTime;

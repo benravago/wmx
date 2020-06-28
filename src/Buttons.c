@@ -355,21 +355,6 @@ void WindowManager::eventKeyPress(XKeyEvent *ev)
                     break;
 #endif
 
-#if CONFIG_GROUPS != False
-                case XK_0:
-                case XK_1:
-                case XK_2:
-                case XK_3:
-                case XK_4:
-                case XK_5:
-                case XK_6:
-                case XK_7:
-                case XK_8:
-                case XK_9: {
-                    windowGrouping(ev, key, c);
-                    break;
-                }
-#endif          
                 default:
                     return;
                 }
@@ -396,89 +381,6 @@ void WindowManager::eventKeyRelease(XKeyEvent *ev)
     }
     return;
 }
-
-#if CONFIG_GROUPS != False
-void WindowManager::windowGrouping(XKeyEvent *ev, KeySym key, Client *c) {
-
-    int group = key - XK_0;
-    Client *x;
-
-    if (ev->state & ShiftMask) {
-        grouping.item(group)->remove_all();
-        return;
-    }
-
-    if (ev->state & ControlMask) {
-        if (c) {
-            // remove if it's there
-            int there = -1;
-
-            for (int i = 0; i < grouping.item(group)->count(); i++) {
-                if (grouping.item(group)->item(i) == c) {
-                    //              fprintf(stderr, "removing client from %d at %d\n", group, i);
-                    there = i;
-                }
-            }
-            
-            if (there != -1) {
-                grouping.item(group)->remove(there);
-            } else {
-                // add if it's not there
-                //fprintf(stderr, "adding client to %d at %d \n", 
-                //      group, grouping.item(group)->count());
-
-                grouping.item(group)->append(c);
-            }
-        }
-    } else {
-        
-        int count = grouping.item(group)->count();
-        int raise = 1;
-
-        if (count > 0) {
-            x = grouping.item(group)->item(count-1);
-            // it seems like there should be a better way of doing this...
-            while (m_currentChannel != x->channel()) {
-                
-                raise = 2;
-
-                if (m_currentChannel < x->channel()) {
-                    flipChannel(False, False, True, 0);
-                } else {
-                    flipChannel(False, True, True, 0);
-                }
-                XSync(display(), False);
-            }
-
-            int temp = 0;
-
-            for (int i = 0; i < count; i++) {
-                if (m_orderedClients[2].item(i) == 
-                    grouping.item(group)->item(count - 1 - i)) {
-                    temp++;
-                }
-            }
-            
-            if ((raise != 2) && (temp == count)) {
-                raise = 0;
-            }
-            //      fprintf(stderr, "raise = %d temp =  %d \n", 
-            //      raise, temp);   
-        }
-
-        for (int i = 0; i < count; i++) {
-            x = grouping.item(group)->item(i);
-            if (x) {
-                if (raise) {
-                    x->mapRaised();
-                } else {
-                    x->lower();
-                }
-            }
-        }
-    }
-}
-#endif
 
 void Client::activateAndWarp()
 {
