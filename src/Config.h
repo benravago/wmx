@@ -26,53 +26,13 @@
 // -- Chris Cannam, January 1998
 
 
-// This isn't one of the sections.  This is the structure for Stefan
-// `Sec' Zehl's runtime configuration hack -- see Config.C.  It's a
-// bit incomplete, but works, mostly.  Anything in this file that's
-// #defined to DynamicConfig::config.something() will take its default
-// from Config.C
-
-struct DynamicConfigImpl;
-class DynamicConfig
-{
-public:
-    DynamicConfig();
-    ~DynamicConfig();
-    void scan(char startup = 0);
-
-    char clickFocus();
-    char raiseFocus();
-    char autoRaiseFocus();
-    int  raiseDelay();
-    char useKeyboard();
-    char fullMenu();
-    char useFeedback();
-    int  feedbackDelay();
-    char disableNew();
-    char rightCirculate();
-    char rightLower();
-    char rightToggleHeight();
-    char passFocusClick();
-    int  tabMargin();
-    char *tabForeground();
-    char *tabBackground();
-    char *frameBackground();
-
-    static DynamicConfig config;
-
-private:
-    DynamicConfigImpl *m_impl;
-    void update(char *);
-};
-
-
 // =================================================
 // Section I. Straightforward operational parameters
 // =================================================
 
 // List visible as well as hidden clients on the root menu?  (Visible
 // ones will be towards the bottom of the menu, flush-right.)
-#define CONFIG_EVERYTHING_ON_ROOT_MENU (DynamicConfig::config.fullMenu())
+#define CONFIG_EVERYTHING_ON_ROOT_MENU 1
 
 // Spawn a temporary new shell between the wm and each new process?
 #define CONFIG_EXEC_USING_SHELL   True
@@ -84,7 +44,7 @@ private:
 // or, for example,
 //#define CONFIG_NEW_WINDOW_COMMAND_OPTIONS "-ls","-sb","-sl","1024",0
 // alternatively,
-#define CONFIG_DISABLE_NEW_WINDOW_COMMAND (DynamicConfig::config.disableNew())
+#define CONFIG_DISABLE_NEW_WINDOW_COMMAND 0
 
 // Area where [exit wmx] is added (0 -> everywhere -# -> px from other side)
 #define CONFIG_EXIT_CLICK_SIZE_X 0
@@ -106,11 +66,11 @@ private:
 // the other two False; you'll then get focus-follows, auto-raise, and
 // a delay on auto-raise as configured in the DELAY settings below.
 
-#define CONFIG_CLICK_TO_FOCUS     (DynamicConfig::config.clickFocus())
-#define CONFIG_RAISE_ON_FOCUS     (DynamicConfig::config.raiseFocus())
-#define CONFIG_AUTO_RAISE         (DynamicConfig::config.autoRaiseFocus())
+#define CONFIG_CLICK_TO_FOCUS     0
+#define CONFIG_RAISE_ON_FOCUS     0
+#define CONFIG_AUTO_RAISE         0
 
-#define CONFIG_PASS_FOCUS_CLICK   (DynamicConfig::config.passFocusClick())
+#define CONFIG_PASS_FOCUS_CLICK   1
 
 // Delays when using AUTO_RAISE focus method
 // 
@@ -119,7 +79,7 @@ private:
 // usual delay before raising; second is the delay after the pointer
 // has stopped moving (only when over simple X windows such as xvt).
 
-#define CONFIG_AUTO_RAISE_DELAY       (DynamicConfig::config.raiseDelay())
+#define CONFIG_AUTO_RAISE_DELAY       400
 #define CONFIG_POINTER_STOPPED_DELAY  80
 #define CONFIG_DESTROY_WINDOW_DELAY   600
 
@@ -172,7 +132,7 @@ private:
 // ========================
 
 // Allow keyboard control?
-#define CONFIG_USE_KEYBOARD       (DynamicConfig::config.useKeyboard())
+#define CONFIG_USE_KEYBOARD       1
 
 // This is the key for wm controls: e.g. Alt/Left and Alt/Right to
 // flip channels, and Alt/Tab to switch windows.  (On my 105-key
@@ -236,6 +196,10 @@ private:
 #define CONFIG_PREVCHANNEL_BUTTON 999 // flip channel, when over frame
 #define CONFIG_NEXTCHANNEL_BUTTON 999 // flip channel, when over frame
 
+#define CONFIG_RIGHT_CIRCULATE       True
+#define CONFIG_RIGHT_LOWER           False
+#define CONFIG_RIGHT_TOGGLE_HEIGHT   False
+
 
 // ==============================
 // Section III. Colours and fonts
@@ -259,21 +223,21 @@ private:
 // CONFIG_TAB_MARGIN defines the size of the gap on the left and right of the
 // text in the tab.
 
-#define CONFIG_TAB_MARGIN   (DynamicConfig::config.tabMargin())
+#define CONFIG_TAB_MARGIN   2
 
 // Colours for window decorations.  The BORDERS one is for the
 // one-pixel border around the edge of each piece of decoration, not
 // for the whole decoration
 
-#define CONFIG_TAB_FOREGROUND     (DynamicConfig::config.tabForeground())
-#define CONFIG_TAB_BACKGROUND     (DynamicConfig::config.tabBackground())
-#define CONFIG_FRAME_BACKGROUND   (DynamicConfig::config.frameBackground())
-#define CONFIG_BUTTON_BACKGROUND  (DynamicConfig::config.frameBackground())
+#define CONFIG_TAB_FOREGROUND     "black"
+#define CONFIG_TAB_BACKGROUND     "gray80"
+#define CONFIG_FRAME_BACKGROUND   "gray95"
+#define CONFIG_BUTTON_BACKGROUND  "gray95"
 #define CONFIG_BORDERS            "black"
 #define CONFIG_CHANNEL_NUMBER     "green"
 
-#define CONFIG_MENU_FOREGROUND    (DynamicConfig::config.tabForeground())
-#define CONFIG_MENU_BACKGROUND    (DynamicConfig::config.tabBackground())
+#define CONFIG_MENU_FOREGROUND    "black"
+#define CONFIG_MENU_BACKGROUND    "gray80"
 #define CONFIG_MENU_BORDERS       "black"
 
 // Pixel width for the bit of frame to the left of the window and the
@@ -315,8 +279,8 @@ private:
 // machine is fast and you're really hyper, you might even like a
 // delay of 0ms.
 
-#define CONFIG_MAD_FEEDBACK       (DynamicConfig::config.useFeedback())
-#define CONFIG_FEEDBACK_DELAY     (DynamicConfig::config.feedbackDelay())
+#define CONFIG_MAD_FEEDBACK       1
+#define CONFIG_FEEDBACK_DELAY     300
 
 // Position of the geometry window:
 // X < 0 left, X > 0 right,  X = 0 center

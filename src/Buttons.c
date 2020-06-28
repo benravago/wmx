@@ -11,8 +11,7 @@ void WindowManager::eventButton(XButtonEvent *e, XEvent *ev)
     setScreenFromPointer();
     Client *c = windowToClient(e->window);
 
-//    fprintf(stderr, "button event, channel change time == %d\n",
-//            (int)m_channelChangeTime);
+    // fprintf(stderr, "button event, channel change time == %d\n", (int)m_channelChangeTime);
 
     // We shouldn't be getting button events for non-focusable clients,
     // but we'd better check just in case.
@@ -24,17 +23,17 @@ void WindowManager::eventButton(XButtonEvent *e, XEvent *ev)
     bool furniture = (c && ((c->type() == DesktopClient) ||
                             (c->type() == DockClient)));
 
-    fprintf(stderr, "wmx: client %p for window %p: furniture? %s\n", c, (void *)(e->window), furniture ? "yes" : "no");
+    // fprintf(stderr, "wmx: client %p for window %p: furniture? %s\n", c, (void *)(e->window), furniture ? "yes" : "no");
 
     if (!furniture) {
         if (e->button == CONFIG_CIRCULATE_BUTTON && m_channelChangeTime == 0) {
-            if (DynamicConfig::config.rightCirculate())
+            if (CONFIG_RIGHT_CIRCULATE)
                 circulate(e->window == e->root);
-            else if (DynamicConfig::config.rightLower())
+            else if (CONFIG_RIGHT_LOWER)
             {
                 if (e->window != e->root && c) c->lower();
             }
-            else if (DynamicConfig::config.rightToggleHeight())
+            else if (CONFIG_RIGHT_TOGGLE_HEIGHT)
             {
                 if (e->window != e->root && c) {
                     if (c->isFullHeight()) {
@@ -75,7 +74,7 @@ void WindowManager::eventButton(XButtonEvent *e, XEvent *ev)
         }
     }
 
-    fprintf(stderr, "wmx: effective root? %s\n", effectiveRoot ? "yes" : "no");
+    // fprintf(stderr, "wmx: effective root? %s\n", effectiveRoot ? "yes" : "no");
 
     if (effectiveRoot) {
 
@@ -101,7 +100,7 @@ void WindowManager::eventButton(XButtonEvent *e, XEvent *ev)
             }
 
         } else if (e->button == CONFIG_COMMANDMENU_BUTTON && m_channelChangeTime == 0) {
-            DynamicConfig::config.scan();
+            // DynamicConfig::config.scan();
             CommandMenu menu(this, (XEvent *)e);
         }
         

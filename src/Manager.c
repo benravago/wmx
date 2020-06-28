@@ -739,7 +739,7 @@ void WindowManager::removeFromHiddenList(Client *c)
 
 void WindowManager::hoistToTop(Client *c)
 {
-    fprintf(stderr, "WindowManager::hoistToTop(%p)\n", c);
+    // fprintf(stderr, "WindowManager::hoistToTop(%p)\n", c);
 
     int i;
     int layer = c->layer();

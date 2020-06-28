@@ -488,8 +488,7 @@ void Client::decorate(Boolean active)
 
 void Client::activate()
 {
-    fprintf(stderr, "Client::activate (this = %p, window = %p, parent = %p)\n",
-            this, (void *)m_window, (void *)parent());
+    // fprintf(stderr, "Client::activate (this = %p, window = %p, parent = %p)\n", this, (void *)m_window, (void *)parent());
 
     if(isNonFocusable())
         return;
@@ -507,12 +506,7 @@ void Client::activate()
         if (CONFIG_AUTO_RAISE || CONFIG_RAISE_ON_FOCUS) mapRaised();
         return;
     }
-/*!!!
-    if (activeClient()) {
-        activeClient()->deactivate();
-        // & some other-screen business
-    }
-*/
+
     Client *previouslyActive = windowManager()->activeClient();
 
     windowManager()->setActiveClient(this); // deactivates any other
