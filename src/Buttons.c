@@ -32,7 +32,6 @@ void WindowManager::eventButton(XButtonEvent *e, XEvent *ev)
 
     fprintf(stderr, "wmx: client %p for window %p: furniture? %s\n", c, (void *)(e->window), furniture ? "yes" : "no");
 
-#if CONFIG_GNOME_BUTTON_COMPLIANCE == False
     if (!furniture) {
         if (e->button == CONFIG_CIRCULATE_BUTTON && m_channelChangeTime == 0) {
             if (DynamicConfig::config.rightCirculate())
@@ -54,7 +53,6 @@ void WindowManager::eventButton(XButtonEvent *e, XEvent *ev)
             return;
         }
     }
-#endif
  
     if (!furniture) {
         if (e->button == CONFIG_NEXTCHANNEL_BUTTON && CONFIG_CHANNEL_SURF) {
@@ -86,22 +84,6 @@ void WindowManager::eventButton(XButtonEvent *e, XEvent *ev)
     fprintf(stderr, "wmx: effective root? %s\n", effectiveRoot ? "yes" : "no");
 
     if (effectiveRoot) {
-
-#if CONFIG_GNOME_BUTTON_COMPLIANCE != False
-        if ((e->button == CONFIG_CLIENTMENU_BUTTON || e->button == CONFIG_CIRCULATE_BUTTON)
-            && m_channelChangeTime == 0) {
-
-            fprintf(stderr, "wmx: forwarding event to button proxy window\n");
-            XUngrabPointer(m_display, CurrentTime);
-            XSendEvent(m_display, m_netwmCheckWin, False, SubstructureNotifyMask, ev);
-            return;
-        } 
-        
-        if (e->button == CONFIG_COMMANDMENU_BUTTON && m_channelChangeTime == 0) {
-            ClientMenu menu(this, (XEvent *)e);
-            return;
-        }
-#endif
 
         if (e->button == CONFIG_CLIENTMENU_BUTTON && m_channelChangeTime == 0) {
 

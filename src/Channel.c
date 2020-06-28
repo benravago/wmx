@@ -236,35 +236,3 @@ WindowManager::ensureChannelExists(int channel)
     }
 }
 
-void
-WindowManager::updateClock()
-{
-    time_t t;
-    struct tm *lt;
-
-    fprintf(stderr, "updateClock\n");
-
-    time(&t);
-    lt = localtime(&t);
-    
-    if (!m_clockWindow[0]) {
-        m_clockWindow[0] = createNumberWindow(0, CONFIG_CLOCK_NUMBER);
-        m_clockWindow[1] = createNumberWindow(0, CONFIG_CLOCK_NUMBER);
-    }
-
-    shapeNumberWindow(m_clockWindow[0], lt->tm_hour, 2);
-    shapeNumberWindow(m_clockWindow[1], lt->tm_min, 2);
-    
-    XMoveResizeWindow(display(), m_clockWindow[0],
-                      30, 30, 500, 160);
-    
-    XMoveResizeWindow(display(), m_clockWindow[1],
-                      30, 9 * CONFIG_CHANNEL_NUMBER_SIZE + 30, 500, 160);
-
-    XMapWindow(display(), m_clockWindow[0]);
-    XLowerWindow(display(), m_clockWindow[0]);
-
-    XMapWindow(display(), m_clockWindow[1]);
-    XLowerWindow(display(), m_clockWindow[1]);
-}
-

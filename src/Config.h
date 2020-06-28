@@ -328,7 +328,6 @@ private:
 #define CONFIG_BUTTON_BACKGROUND  (DynamicConfig::config.frameBackground())
 #define CONFIG_BORDERS            "black"
 #define CONFIG_CHANNEL_NUMBER     "green"
-#define CONFIG_CLOCK_NUMBER       "gray90"
 
 #define CONFIG_MENU_FOREGROUND    (DynamicConfig::config.tabForeground())
 #define CONFIG_MENU_BACKGROUND    (DynamicConfig::config.tabBackground())
@@ -393,25 +392,9 @@ private:
 // if you press CONFIG_ALT_KEY_MASK + CONFIG_GROUP_REMOVE_ALL
 // + a number key that group is cleared of all windows.
 
-#define CONFIG_GROUPS             True
+#define CONFIG_GROUPS             False
 #define CONFIG_GROUP_ADD          ControlMask  
 #define CONFIG_GROUP_REMOVE_ALL   ShiftMask
-
-// Set CLOCK if you want wmx to display a clock permanently in the
-// background at top-left of screen 0.  Use CONFIG_CLOCK_NUMBER
-// to control the colour of the clock digits.
-
-#define CONFIG_CLOCK              False
-
-// This lets you choose whether to keep the regular wmx
-// mouse button behaviour, or go w/ the GNOME-described one.
-// If this is True, the left mouse button (button1) lets you 
-// select 1 or more gmc 'icons' and drag them around etc,
-// the right mouse button (button3) pops up the GNOME 
-// command menu, and the middle mouse button (button2)
-// acts like the left mouse normally does (list of windows)
-
-#define CONFIG_GNOME_BUTTON_COMPLIANCE   False
 
 #endif
 

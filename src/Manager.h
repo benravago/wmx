@@ -159,10 +159,6 @@ private:
     Time m_channelChangeTime;
     Window *m_channelWindow;
 
-    void updateClock();
-    Window *m_clockWindow;
-    Time m_clockUpdateTime;
-
     Boolean m_looping;
     int m_returnCode;
 
