@@ -3,17 +3,9 @@ CCC=g++
 prefix=/usr/local
 exec_prefix=${prefix}
 
-# If you're not using background pixmaps, remove -lXpm from the LIBS.
-# If your X libraries are somewhere other than /usr/X11/lib, give their
-# location here.
-#LIBS	= -L/usr/X11/lib -lXpm -lXext -lX11 -lXmu -lSM -lICE -lm
 LIBS=-lXcomposite -lXext -lX11  -lXft  -lfreetype  -lfontconfig -lfreetype -lSM -lICE
 LDFLAGS=
 
-# If your X includes are not in /usr/include/X11, add their location
-# as a -I option here (excluding the X11 bit).  If you're using I18N
-# and Xlocale, please add -DX_LOCALE.
-#CFLAGS = -g -O2 -I/usr/include -I/usr/openwin/include
 CXXFLAGS=-g -O2 -I/usr/include/freetype2 -I/usr/include/libpng16  -I/usr/include/freetype2 -I/usr/include/libpng16  -I/usr/include/freetype2 -I/usr/include/libpng16  -Wall
 
 OBJECTS	= Border.o Buttons.o Channel.o Client.o Config.o Events.o Main.o Manager.o Menu.o Rotated.o Session.o
@@ -52,7 +44,7 @@ install-rpm:
 
 # DO NOT DELETE -- make depend depends on it
 Border.o: Border.c Border.h General.h Config.h Rotated.h Client.h \
- Manager.h listmacro.h background.xpm
+ Manager.h listmacro.h
 Buttons.o: Buttons.c Manager.h General.h Config.h listmacro.h Client.h \
  Border.h Rotated.h Menu.h
 Channel.o: Channel.c Manager.h General.h Config.h listmacro.h Client.h \

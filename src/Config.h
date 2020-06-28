@@ -344,14 +344,6 @@ private:
 // Section IV. Flashy stuff
 // ========================
 
-// If USE_PIXMAPS is True the frames will be decorated with the pixmap
-// in ./background.xpm; if USE_PIXMAP_MENUS is also True, the menus
-// will be too.  The latter screws up in palette-based visuals, but
-// should be okay in true-colour.
-
-#define CONFIG_USE_PIXMAPS        False
-#define CONFIG_USE_PIXMAP_MENUS   False
-
 // Set CHANNEL_SURF for multi-channel switching; CHANNEL_CLICK_SIZE is
 // how close you have to middle-button-click to the top-right corner
 // of the root window before the channel change happens.  Set

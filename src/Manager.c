@@ -187,12 +187,6 @@ WindowManager::WindowManager(int argc, char **argv) :
         fprintf(stderr, "\n     Shape prodding off.");
     }
 
-    if (CONFIG_USE_PIXMAPS) {
-        fprintf(stderr, "  Fancy borders.");
-    } else {
-        fprintf(stderr, "  Plain borders.");
-    }
-
     if (CONFIG_MAD_FEEDBACK) {
         fprintf(stderr, "  Skeletal feedback on.");
     } else {

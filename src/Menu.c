@@ -145,18 +145,10 @@ Menu::Menu(WindowManager *manager, XEvent *e)
               (display(), m_windowManager->mroot(i), 0, 0, 1, 1, 1,
                m_border, m_background);
 
-            
-#if ( CONFIG_USE_PIXMAPS != False ) && ( CONFIG_USE_PIXMAP_MENUS != False )
-            attr[i].background_pixmap = Border::backgroundPixmap(manager);
-#endif
             attr[i].save_under =
               (DoesSaveUnders(ScreenOfDisplay(display(), i)) ?
              True : False);
 
-#if ( CONFIG_USE_PIXMAPS != False ) && ( CONFIG_USE_PIXMAP_MENUS != False )
-            XChangeWindowAttributes
-              (display(), m_window[i], CWBackPixmap, &attr[i]);
-#endif
             XChangeWindowAttributes
               (display(), m_window[i], CWSaveUnder, &attr[i]);
 

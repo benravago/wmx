@@ -6,11 +6,6 @@
 
 // Some shaping mods due to Jacques Garrigue, garrigue@kurims.kyoto-u.ac.jp
 
-#if CONFIG_USE_PIXMAPS != False
-#include <X11/xpm.h>
-#include "background.xpm"
-#endif
-
 // These are degenerate initialisations, don't change them
 #ifdef CONFIG_USE_XFT
 XftFont *Border::m_tabFont = 0;
@@ -284,77 +279,6 @@ void Border::initialiseStatics(WindowManager *wm)
             wm->fatal("couldn't allocate border GC");
         }
 
-#if CONFIG_USE_PIXMAPS != False
-        int use_dynamic = True;
-        XpmAttributes attrs;
-
-        //      attrs.valuemask = 0L;
-
-        attrs.valuemask =
-          XpmCloseness | XpmVisual | XpmColormap | XpmDepth;
-        attrs.closeness = 40000;
-        attrs.visual = XDefaultVisual(wm->display(), i);
-        attrs.colormap = XDefaultColormap(wm->display(), i);
-        attrs.depth = XDefaultDepth(wm->display(), i);
-                        
-        char *home = getenv ("HOME");
-        if (home) {
-            char *pixMapPath = (char *) malloc (sizeof (char) * (strlen (home)
-                                                                 + strlen (CONFIG_COMMAND_MENU) + 20));
-            if (pixMapPath) {
-                strcpy (pixMapPath, home);
-                strcat (pixMapPath, "/");
-                strcat (pixMapPath, CONFIG_COMMAND_MENU);
-                strcat (pixMapPath, "/border.xpm");
-                
-                // look for background pixmap file in
-                // the users .wmx directory. It is *not*
-                // an error, if none is found. (joze)
-                // 
-                // (todo: omit compiling in default pixmap, and look for
-                //  it in systemwide directory)
-                if (XpmReadFileToPixmap (wm->display(), wm->root(), pixMapPath,
-                                         &m_backgroundPixmap, NULL, &attrs)
-                    != XpmSuccess) {
-                    use_dynamic = False;
-                }
-                free (pixMapPath);
-            }
-        }
-        
-        if (use_dynamic == False) {
-            switch (XpmCreatePixmapFromData
-                    (wm->display(), wm->root(), (char **)background,
-                     &m_backgroundPixmap, NULL, &attrs)) {
-            case XpmSuccess:
-                break;
-            case XpmColorError:
-                fprintf(stderr, "wmx: Pixmap colour error\n");
-                m_backgroundPixmap = None;
-                break;
-            case XpmOpenFailed:
-                fprintf(stderr, "wmx: Pixmap open failed\n");
-                m_backgroundPixmap = None;
-                break;
-            case XpmFileInvalid:
-                fprintf(stderr, "wmx: Pixmap file invalid\n");
-                m_backgroundPixmap = None;
-                break;
-            case XpmNoMemory:
-                fprintf(stderr, "wmx: Ran out of memory when loading pixamp\n");
-                m_backgroundPixmap = None;
-                break;
-            case XpmColorFailed:
-                fprintf(stderr, "wmx: Pixmap colour failed\n");
-                m_backgroundPixmap = None;
-                break;
-            default:
-                fprintf(stderr, "wmx: Unknown error loading pixmap\n");
-                m_backgroundPixmap = None;
-                break;
-            }
-        } else
-#endif  
             m_backgroundPixmap = None;
     }
 }
