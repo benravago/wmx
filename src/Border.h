@@ -3,7 +3,6 @@
 #define _BORDER_H_
 
 #include "General.h"
-#include "Rotated.h"
 
 class Client;
 class WindowManager;
@@ -78,9 +77,7 @@ private:
 
     char *m_label;
 
-#ifdef CONFIG_USE_XFT
     XftDraw *m_xftDraw;
-#endif
 
     void fixTabHeight(int);
     int getRotatedTextWidth(char *);
@@ -100,12 +97,8 @@ private:
 private:
     int        m_tabHeight;     // depends on the label
     static int *m_tabWidth;     // depends on the label font
-#ifdef CONFIG_USE_XFT
     static XftFont *m_tabFont;
     static XftColor *m_xftColour;
-#else
-    static XRotFontStruct **m_tabFont;
-#endif
     static GC  *m_drawGC;
     static unsigned long *m_foregroundPixel;
     static unsigned long *m_backgroundPixel;

@@ -21,14 +21,9 @@ public:
     
     static Boolean m_initialised;
     static GC *m_menuGC;
-#ifdef CONFIG_USE_XFT
     static XftFont *m_font;
     static XftColor *m_xftColour;
     static XftDraw **m_xftDraw;
-#else
-    static XFontSet m_fontset;
-    static XFontStruct **m_font;
-#endif
     static unsigned long m_foreground;
     static unsigned long m_background;
     static unsigned long m_border;

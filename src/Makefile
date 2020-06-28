@@ -3,12 +3,13 @@ CCC=g++
 prefix=/usr/local
 exec_prefix=${prefix}
 
-LIBS=-lXcomposite -lXext -lX11  -lXft  -lfreetype  -lfontconfig -lfreetype -lSM -lICE
+LIBS=-lXcomposite -lXext -lX11 -lXft -lfontconfig
+#-lfreetype 
 LDFLAGS=
 
 CXXFLAGS=-g -O2 -I/usr/include/freetype2 -I/usr/include/libpng16  -I/usr/include/freetype2 -I/usr/include/libpng16  -I/usr/include/freetype2 -I/usr/include/libpng16  -Wall
 
-OBJECTS	= Border.o Buttons.o Channel.o Client.o Config.o Events.o Main.o Manager.o Menu.o Rotated.o
+OBJECTS	= Border.o Buttons.o Channel.o Client.o Config.o Events.o Main.o Manager.o Menu.o
 
 .c.o:
 	$(CCC) -c $(CXXFLAGS) $<
@@ -43,21 +44,12 @@ install-rpm:
 
 
 # DO NOT DELETE -- make depend depends on it
-Border.o: Border.c Border.h General.h Config.h Rotated.h Client.h \
- Manager.h listmacro.h
-Buttons.o: Buttons.c Manager.h General.h Config.h listmacro.h Client.h \
- Border.h Rotated.h Menu.h
-Channel.o: Channel.c Manager.h General.h Config.h listmacro.h Client.h \
- Border.h Rotated.h
-Client.o: Client.c Manager.h General.h Config.h listmacro.h Client.h \
- Border.h Rotated.h
+Border.o: Border.c Border.h General.h Config.h Client.h Manager.h listmacro.h
+Buttons.o: Buttons.c Manager.h General.h Config.h listmacro.h Client.h Border.h Menu.h
+Channel.o: Channel.c Manager.h General.h Config.h listmacro.h Client.h Border.h
+Client.o: Client.c Manager.h General.h Config.h listmacro.h Client.h Border.h
 Config.o: Config.c Config.h
-Events.o: Events.c Manager.h General.h Config.h listmacro.h Client.h \
- Border.h Rotated.h
-Main.o: Main.c Manager.h General.h Config.h listmacro.h Client.h \
- Border.h Rotated.h
-Manager.o: Manager.c Manager.h General.h Config.h listmacro.h Menu.h \
- Client.h Border.h Rotated.h Cursors.h
-Menu.o: Menu.c Menu.h General.h Config.h Manager.h listmacro.h \
- Client.h Border.h Rotated.h
-Rotated.o: Rotated.c Config.h Rotated.h
+Events.o: Events.c Manager.h General.h Config.h listmacro.h Client.h Border.h
+Main.o: Main.c Manager.h General.h Config.h listmacro.h Client.h Border.h
+Manager.o: Manager.c Manager.h General.h Config.h listmacro.h Menu.h Client.h Border.h
+Menu.o: Menu.c Menu.h General.h Config.h Manager.h listmacro.h Client.h Border.h

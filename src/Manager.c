@@ -11,7 +11,6 @@
 #include <sys/types.h>
 #include <sys/wait.h>
 
-#include "Cursors.h"
 #include <X11/cursorfont.h>
 
 #ifdef CONFIG_USE_COMPOSITE
@@ -86,13 +85,8 @@ WindowManager::WindowManager(int argc, char **argv) :
             "     Multihead display code Copyright (c) 2000 Sven Oliver `SvOlli' Moll\n"
             "     Original NETWM code Copyright (c) 2000 Jamie Montgomery\n"
             "     See source distribution for other patch contributors\n"
-#ifdef CONFIG_USE_XFT
             "     Copying and redistribution encouraged.  "
             "No warranty.\n\n"
-#else
-            "     %s\n     Copying and redistribution encouraged.  "
-            "No warranty.\n\n", XV_COPYRIGHT
-#endif
             );
 
     int i, j;
@@ -443,35 +437,6 @@ int WindowManager::errorHandler(Display *d, XErrorEvent *e)
     return 0;
 }    
 
-
-static Cursor makeCursor(Display *d, Window w,
-                         unsigned char *bits, unsigned char *mask_bits,
-                         int width, int height, int xhot, int yhot,
-                         XColor *fg, XColor *bg, int fontIndex)
-{
-    Cursor cursor;
-
-    if (CONFIG_USE_PLAIN_X_CURSORS) {
-
-        cursor = XCreateFontCursor(d, fontIndex);
-
-    } else {
-
-        Pixmap pixmap =
-            XCreateBitmapFromData(d, w, (const char *)bits, width, height);
-        
-        Pixmap mask =
-            XCreateBitmapFromData(d, w, (const char *)mask_bits, width,height);
-
-        cursor = XCreatePixmapCursor(d, pixmap, mask, fg, bg, xhot, yhot);
-
-        XFreePixmap(d, pixmap);
-        XFreePixmap(d, mask);
-    }
-
-    return cursor;
-}
-
 void WindowManager::setScreenFromRoot(Window root)
 {
     int s;
@@ -489,7 +454,6 @@ void WindowManager::initialiseScreen()
   
     m_root = (Window *) malloc(m_screensTotal * sizeof(Window));
     m_defaultColormap = (Colormap *) malloc(m_screensTotal * sizeof(Colormap));
-//    m_minimumColormaps = (int *) malloc(m_screensTotal * sizeof(int));
     m_channelWindow = (Window *) malloc(m_screensTotal * sizeof(Window));
 
     for (i = 0 ; i < m_screensTotal ; i++) {
@@ -499,7 +463,6 @@ void WindowManager::initialiseScreen()
 
         m_root[i] = RootWindow(m_display, i);
         m_defaultColormap[i] = DefaultColormap(m_display, i);
-//        m_minimumColormaps[i] = MinCmapsOfScreen(ScreenOfDisplay(m_display, i));
 
         XColor black, white, temp;
 
@@ -508,31 +471,11 @@ void WindowManager::initialiseScreen()
         if (!XAllocNamedColor(m_display, m_defaultColormap[i], "white", &white, &temp))
         fatal("couldn't load colour \"white\"!");
 
-        m_cursor = makeCursor
-        (m_display, m_root[i], cursor_bits, cursor_mask_bits,
-         cursor_width, cursor_height, cursor_x_hot,
-         cursor_y_hot, &black, &white, XC_top_left_arrow);
-
-        m_xCursor = makeCursor
-        (m_display, m_root[i], ninja_cross_bits, ninja_cross_mask_bits,
-         ninja_cross_width, ninja_cross_height, ninja_cross_x_hot,
-         ninja_cross_y_hot, &black, &white, XC_X_cursor);
-
-        m_hCursor = makeCursor
-        (m_display, m_root[i], cursor_right_bits, cursor_right_mask_bits,
-         cursor_right_width, cursor_right_height, cursor_right_x_hot,
-         cursor_right_y_hot, &black, &white, XC_right_side);
-
-        m_vCursor = makeCursor
-        (m_display, m_root[i], cursor_down_bits, cursor_down_mask_bits,
-         cursor_down_width, cursor_down_height, cursor_down_x_hot,
-         cursor_down_y_hot, &black, &white, XC_bottom_side);
-
-        m_vhCursor = makeCursor
-        (m_display, m_root[i], cursor_down_right_bits, cursor_down_right_mask_bits,
-         cursor_down_right_width, cursor_down_right_height,
-         cursor_down_right_x_hot, cursor_down_right_y_hot, &black, &white,
-         XC_bottom_right_corner);
+        m_cursor = XCreateFontCursor(m_display, XC_top_left_arrow);
+        m_xCursor = XCreateFontCursor(m_display, XC_X_cursor);
+        m_hCursor = XCreateFontCursor(m_display, XC_right_side);
+        m_vCursor = XCreateFontCursor(m_display, XC_bottom_side);
+        m_vhCursor = XCreateFontCursor(m_display, XC_bottom_right_corner);
 
         XSetWindowAttributes attr;
         attr.cursor = m_cursor;

@@ -2,17 +2,12 @@
 #include "Border.h"
 #include "Client.h"
 #include "Manager.h"
-#include "Rotated.h"
 
 // Some shaping mods due to Jacques Garrigue, garrigue@kurims.kyoto-u.ac.jp
 
 // These are degenerate initialisations, don't change them
-#ifdef CONFIG_USE_XFT
 XftFont *Border::m_tabFont = 0;
 XftColor *Border::m_xftColour = 0;
-#else
-XRotFontStruct **Border::m_tabFont = 0;
-#endif
 int *Border::m_tabWidth = 0;
 GC *Border::m_drawGC = 0;
 
@@ -64,9 +59,7 @@ void BorderRectangleList::append(int x, int y, int w, int h)
 Border::Border(Client *const c, Window child) :
     m_client(c), m_parent(0), m_tab(0),
     m_child(child), m_button(0), m_resize(0), m_label(0),
-#ifdef CONFIG_USE_XFT
     m_xftDraw(0),
-#endif
     m_prevW(-1), m_prevH(-1), m_tabHeight(-1)
 {
     m_parent = root();
@@ -98,9 +91,7 @@ Border::~Border()
                 XDestroyWindow(display(), m_feedback);
             }
 
-#ifdef CONFIG_USE_XFT
             if (m_xftDraw) XftDrawDestroy(m_xftDraw);
-#endif
         }
     }
 
@@ -119,13 +110,8 @@ void Border::initialiseStatics(WindowManager *wm)
     XGCValues *values;
     
     m_drawGC = (GC *) malloc(wm->screensTotal() * sizeof(GC));
-#ifdef CONFIG_USE_XFT
     m_xftColour = (XftColor *) malloc(wm->screensTotal() *
                                       sizeof(XftColor));
-#else
-    m_tabFont = (XRotFontStruct **) malloc(wm->screensTotal() * 
-                                           sizeof(XRotFontStruct *));
-#endif
     m_tabWidth = (int *) malloc(wm->screensTotal() * sizeof(int));
     m_foregroundPixel = (unsigned long *) malloc(wm->screensTotal() * 
                                                  sizeof(unsigned long));
@@ -145,7 +131,6 @@ void Border::initialiseStatics(WindowManager *wm)
                   "have different storage requirements -- bailing out");
     }
 
-#ifdef CONFIG_USE_XFT
     char *fi = strdup(CONFIG_FRAME_FONT);
     char *ffi = fi, *tokstr = fi;
     while ((fi = strtok(tokstr, ","))) {
@@ -218,7 +203,6 @@ void Border::initialiseStatics(WindowManager *wm)
     if (!m_tabFont) {
         wm->fatal("couldn't load default rotated Xft font, bailing out");
     }
-#endif
 
     for (int i = 0; i < wm->screensTotal(); i++) {
 
@@ -235,19 +219,6 @@ void Border::initialiseStatics(WindowManager *wm)
         m_borderPixel[i] = wm->allocateColour
             (i, CONFIG_BORDERS, "border");
 
-#ifndef CONFIG_USE_XFT
-        if (!(m_tabFont[i] = XRotLoadFont(wm->display(), i,
-                                          CONFIG_NICE_FONT, 90.0)))
-        {
-            if(!(m_tabFont[i] = XRotLoadFont(wm->display(), i,
-                                             CONFIG_NASTY_FONT, 90.0)))
-            {
-                wm->fatal("couldn't load default rotated font, bailing out");
-            }
-        }
-
-        m_tabWidth[i] = m_tabFont[i]->height + (CONFIG_TAB_MARGIN * 2);
-#else
         XftColorAllocName
             (wm->display(),
              XDefaultVisual(wm->display(), i),
@@ -257,7 +228,6 @@ void Border::initialiseStatics(WindowManager *wm)
 
         fprintf(stderr, "tab font height = %d\n", (int)m_tabFont->height);
         m_tabWidth[i] = m_tabFont->height + (CONFIG_TAB_MARGIN * 2);
-#endif
 
         if (m_tabWidth[i] < TAB_TOP_HEIGHT * 2 + 8) {
             m_tabWidth[i] = TAB_TOP_HEIGHT * 2 + 8;
@@ -364,7 +334,6 @@ void Border::drawLabel()
 {
     if (m_label) {
         XClearWindow(display(), m_tab);
-#ifdef CONFIG_USE_XFT
 //      fprintf(stderr, "coords: %d,%d / label: \"%s\"\n", (int)(2 + m_tabFont->ascent),
 //              (int)(m_tabHeight - 1), m_label);
         XftDrawStringUtf8(m_xftDraw,
@@ -374,12 +343,6 @@ void Border::drawLabel()
                           m_tabHeight - 1,
                           (FcChar8 *)m_label,
                           strlen(m_label));
-#else
-        XRotDrawString(display(), screen(), m_tabFont[screen()], m_tab,
-                       m_drawGC[screen()],
-                       CONFIG_TAB_MARGIN + m_tabFont[screen()]->max_ascent,
-                       m_tabHeight - 1, m_label, strlen(m_label));
-#endif
     }
 }
 
@@ -397,16 +360,12 @@ Boolean Border::isFixedSize(void)
 
 int Border::getRotatedTextWidth(char *text)
 {
-#ifdef CONFIG_USE_XFT
     XGlyphInfo extents;
     XftTextExtentsUtf8(display(), m_tabFont, (FcChar8 *)text, strlen(text),
                        &extents);
 //    fprintf(stderr, "extents width=%d height=%d\n", (int)extents.width,
 //          (int)extents.height);
     return extents.height;
-#else
-    return XRotTextWidth(m_tabFont[screen()], text, strlen(text));
-#endif
 }
 
 void Border::fixTabHeight(int maxHeight)
@@ -969,11 +928,9 @@ void Border::configure(int x, int y, int w, int h,
             }
         }
 
-#ifdef CONFIG_USE_XFT
         m_xftDraw = XftDrawCreate(display(), m_tab,
                                   XDefaultVisual(display(), screen()),
                                   XDefaultColormap(display(), screen()));
-#endif
     }
 
     XWindowChanges wc;

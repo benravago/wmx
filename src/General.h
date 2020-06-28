@@ -50,13 +50,11 @@ typedef char Boolean;
 
 #include "Config.h"
 
-#ifdef CONFIG_USE_XFT
 #include <ft2build.h>
 #include FT_FREETYPE_H 
 #include FT_OUTLINE_H
 #include FT_GLYPH_H
 #include <X11/Xft/Xft.h>
-#endif
 
 //!!! these replaced by atoms
 #define WIN_STATE_STICKY          (1<<0) /*everyone knows sticky*/

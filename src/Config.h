@@ -241,13 +241,7 @@ private:
 // Section III. Colours and fonts
 // ==============================
 
-// Define CONFIG_USE_XFT to enable Xft support for drawing fonts.
-// Otherwise plain X calls will be used.  The rest of the font
-// configuration depends on whether or not this is set.
-
-#define CONFIG_USE_XFT 1
-
-#ifdef CONFIG_USE_XFT
+// Use Xft for fonts and cursors.
 
 // Fonts used all over the place.  FRAME_FONT is a comma-separated
 // list of font names to use for the frame text (the first available
@@ -262,32 +256,10 @@ private:
 #define CONFIG_MENU_FONT "DejaVu Sans"
 #define CONFIG_MENU_FONT_SIZE 12
 
-#else
-
-// Fonts used all over the place.  NICE_FONT is for the frames, and
-// NICE_MENU_FONT for the menus.  NASTY_FONT is what you'll get if it
-// can't find one of the NICE ones.  These are font lists, rather than
-// single fonts
-
-#define CONFIG_NICE_FONT          "-*-lucida-bold-r-*-*-14-*-75-75-*-*-*-*,-*-*-medium-r-*-*-14-*-75-75-*-*-*-*"
-#define CONFIG_NICE_MENU_FONT     "-*-lucida-medium-r-*-*-14-*-75-75-*-*-*-*,-*-*-medium-r-*-*-14-*-75-75-*-*-*-*"
-#define CONFIG_NASTY_FONT         "fixed,-*-*-*-*-*-*-14-*-75-75-*-*-*-*"
-
-#endif
-
 // CONFIG_TAB_MARGIN defines the size of the gap on the left and right of the
 // text in the tab.
 
 #define CONFIG_TAB_MARGIN   (DynamicConfig::config.tabMargin())
-
-
-// If USE_PLAIN_X_CURSORS is True, wmx will use cursors from the
-// standard X cursor font; otherwise it will install its own.  You may
-// wish to set this if your X client and server are on different
-// endian machines, or if you've aliased the cursor font to something
-// else you like better, or if you just prefer the plain X cursors
-
-#define CONFIG_USE_PLAIN_X_CURSORS      True
 
 // Colours for window decorations.  The BORDERS one is for the
 // one-pixel border around the edge of each piece of decoration, not

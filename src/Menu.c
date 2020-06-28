@@ -9,14 +9,9 @@
 
 Boolean       Menu::m_initialised = False;
 GC           *Menu::m_menuGC;
-#ifdef CONFIG_USE_XFT
 XftFont      *Menu::m_font;
 XftColor     *Menu::m_xftColour;
 XftDraw     **Menu::m_xftDraw;
-#else
-XFontSet      Menu::m_fontset;
-XFontStruct **Menu::m_font;
-#endif
 unsigned long Menu::m_foreground;
 unsigned long Menu::m_background;
 unsigned long Menu::m_border;
@@ -44,7 +39,6 @@ Menu::Menu(WindowManager *manager, XEvent *e)
         m_menuGC = (GC *) malloc(m_windowManager->screensTotal() * sizeof(GC));
         m_window = (Window *) malloc(m_windowManager->screensTotal() *
                                      sizeof(Window));
-#ifdef CONFIG_USE_XFT
         char *fi = strdup(CONFIG_MENU_FONT);
         char *ffi = fi, *tokstr = fi;
         while ((fi = strtok(tokstr, ","))) {
@@ -84,10 +78,6 @@ Menu::Menu(WindowManager *manager, XEvent *e)
                                           sizeof(XftColor));
         m_xftDraw = (XftDraw **) malloc(m_windowManager->screensTotal() *
                                         sizeof(XftDraw *));
-#else
-        m_font = (XFontStruct **) malloc(m_windowManager->screensTotal() *
-                                         sizeof(XFontStruct *));
-#endif
         values = (XGCValues *) malloc(m_windowManager->screensTotal() *
                                       sizeof(XGCValues));
         attr = (XSetWindowAttributes *) malloc(m_windowManager->screensTotal() *
@@ -102,44 +92,17 @@ Menu::Menu(WindowManager *manager, XEvent *e)
             m_border = m_windowManager->allocateColour
               (i, CONFIG_MENU_BORDERS, "menu border");
 
-#ifndef CONFIG_USE_XFT
-            char **ml;
-            int mc;
-            char *ds;
-            
-            m_fontset = XCreateFontSet(display(), CONFIG_NICE_MENU_FONT,
-                                       &ml, &mc, &ds);
-            if (!m_fontset)
-              m_fontset = XCreateFontSet(display(), CONFIG_NASTY_FONT,
-                                         &ml, &mc, &ds);
-            if (m_fontset) {
-                XFontStruct **fs_list;
-                XFontsOfFontSet(m_fontset, &fs_list, &ml);
-                m_font[i] = fs_list[0];
-            } else {
-                m_font[i] = NULL;
-            }
-#define XDrawString(t,u,v,w,x,y,z) XmbDrawString(t,u,m_fontset,v,w,x,y,z)
-            if (!m_font[i]) m_windowManager->fatal("couldn't load menu font\n");
-#endif
             
             values[i].background = m_background;
             values[i].foreground = m_foreground ^ m_background;
             values[i].function = GXxor;
             values[i].line_width = 0;
             values[i].subwindow_mode = IncludeInferiors;
-#ifndef CONFIG_USE_XFT
-            values[i].font = m_font[i]->fid;
-#endif
             m_menuGC[i] = XCreateGC
               (display(), m_windowManager->mroot(i),
                GCForeground | GCBackground | GCFunction |
                GCLineWidth | GCSubwindowMode, &values[i]);
 
-#ifndef CONFIG_USE_XFT
-            XChangeGC(display(), Border::drawGC(m_windowManager, i),
-                      GCFont, &values[i]);
-#endif
 
             m_window[i] = XCreateSimpleWindow
               (display(), m_windowManager->mroot(i), 0, 0, 1, 1, 1,
@@ -152,7 +115,6 @@ Menu::Menu(WindowManager *manager, XEvent *e)
             XChangeWindowAttributes
               (display(), m_window[i], CWSaveUnder, &attr[i]);
 
-#ifdef CONFIG_USE_XFT
             XftColorAllocName
                 (display(),
                  XDefaultVisual(display(), i),
@@ -163,7 +125,6 @@ Menu::Menu(WindowManager *manager, XEvent *e)
             m_xftDraw[i] = XftDrawCreate(display(), m_window[i],
                                          XDefaultVisual(display(), i),
                                          XDefaultColormap(display(), i));
-#endif
         }
         m_initialised = True;
     }
@@ -176,27 +137,17 @@ Menu::~Menu()
 
 int Menu::getTextWidth(char *text, unsigned int len)
 {
-#ifdef CONFIG_USE_XFT
     XGlyphInfo extents;
     XftTextExtentsUtf8(display(), m_font, (FcChar8 *)text, len, &extents);
     return extents.width;
-#else
-    return XmbTextEscapement(m_fontset, text, len);
-#endif
 }
 
 void Menu::cleanup(WindowManager *const wm)
 {
     if (m_initialised) { // fix due to Eric Marsden
-#ifdef CONFIG_USE_XFT
         XftFontClose(wm->display(), m_font);
-#endif
         for (int i = 0; i < wm->screensTotal(); i++) {
-#ifdef CONFIG_USE_XFT
             XftDrawDestroy(m_xftDraw[i]);
-#else
-            XFreeFontSet(wm->display(), m_fontset);
-#endif
             XFreeGC(wm->display(), m_menuGC[i]);
         }
     }
@@ -225,11 +176,7 @@ int Menu::getSelection()
 
     Boolean isKeyboardMenu = isKeyboardMenuEvent(m_event);
     int selecting = isKeyboardMenu ? 0 : -1, prev = -1;
-#ifdef CONFIG_USE_XFT
     int entryHeight = m_font->ascent + m_font->descent + 4;
-#else
-    int entryHeight = m_font[screen()]->ascent + m_font[screen()]->descent + 4;
-#endif
     int totalHeight = entryHeight * m_nItems + 13;
 
     int mx = DisplayWidth (display(), screen()) - 1;
@@ -426,37 +373,20 @@ int Menu::getSelection()
             for (i = 0; i < m_nItems; i++) {
 
                 int dx = getTextWidth(m_items[i], STRLEN_MITEMS(i));
-#ifdef CONFIG_USE_XFT
                 int dy = i * entryHeight + m_font->ascent + 10;
-#else
-                int dy = i * entryHeight + m_font[screen()]->ascent + 10;
-#endif
 
                 if (i >= m_nHidden) {
-#ifdef CONFIG_USE_XFT
                     XftDrawStringUtf8(m_xftDraw[screen()],
                                       &m_xftColour[screen()],
                                       m_font,
                                       maxWidth - 8 - dx, dy,
                                       (FcChar8 *)m_items[i], STRLEN_MITEMS(i));
-#else
-                    XDrawString(display(), m_window[screen()],
-                                Border::drawGC(m_windowManager,screen()),
-                                maxWidth - 8 - dx, dy,
-                                m_items[i], STRLEN_MITEMS(i));
-#endif
                 } else {
-#ifdef CONFIG_USE_XFT
                     XftDrawStringUtf8(m_xftDraw[screen()],
                                       &m_xftColour[screen()],
                                       m_font,
                                       8, dy,
                                       (FcChar8 *)m_items[i], STRLEN_MITEMS(i));
-#else
-                    XDrawString(display(), m_window[screen()],
-                                Border::drawGC(m_windowManager,screen()),
-                                8, dy, m_items[i], STRLEN_MITEMS(i));
-#endif
                 }
             }
 
@@ -976,11 +906,7 @@ void ShowGeometry::update(int x, int y)
 
     sprintf(string, "%d %d", x, y);
     int width = getTextWidth(string, strlen(string)) + 8;
-#ifdef CONFIG_USE_XFT
     int height = m_font->ascent + m_font->descent + 8;
-#else
-    int height = m_font[screen()]->ascent + m_font[screen()]->descent + 8;
-#endif
     int mx = DisplayWidth (display(), screen()) - 1;
     int my = DisplayHeight(display(), screen()) - 1;
   
@@ -1006,7 +932,6 @@ void ShowGeometry::update(int x, int y)
     XClearWindow(display(), m_window[screen()]);
     XMapRaised(display(), m_window[screen()]);
 
-#ifdef CONFIG_USE_XFT
     XftDrawStringUtf8(m_xftDraw[screen()],
                       &m_xftColour[screen()],
                       m_font,
@@ -1014,11 +939,6 @@ void ShowGeometry::update(int x, int y)
                       4 + m_font->ascent,
                       (FcChar8 *)string,
                       strlen(string));
-#else
-    XDrawString(display(), m_window[screen()],
-                Border::drawGC(m_windowManager,screen()),
-                4, 4 + m_font[screen()]->ascent, string, strlen(string));
-#endif
 }
 
 void ShowGeometry::remove()
