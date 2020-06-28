@@ -1,4 +1,3 @@
-/* -*- c-basic-offset: 4 indent-tabs-mode: nil -*-  vi:set ts=8 sts=4 sw=4: */
 
 #ifndef _LISTMACRO_H_
 #define _LISTMACRO_H_
@@ -24,10 +23,10 @@ public: \
     long count() const { return m_count; } \
     T &item(long index) const { \
         if (!range_check(index, "item")) return m_items[0]; \
-	return m_items[index]; \
+        return m_items[index]; \
     } \
     T *array(long index, long) { \
-	return m_items + index; \
+        return m_items + index; \
     } \
 \
     void append(const T &); \
@@ -54,7 +53,7 @@ void List::append(const T &item) { \
     if (m_items) { \
         m_items = (T *)realloc(m_items, (m_count + 1) * sizeof(T)); \
     } else { \
-	m_items = (T *)malloc(sizeof(T)); \
+        m_items = (T *)malloc(sizeof(T)); \
     } \
     assert(m_items); \
     new (&m_items[m_count++], this) T(item); \
@@ -65,7 +64,7 @@ void List::remove(long index) { \
     m_items[index].T::~T(); \
     memmove(m_items+index, m_items+index+1, (m_count-index-1) * sizeof(T)); \
     if (m_count == 1) { \
-	free((void *)m_items); m_items = 0; \
+        free((void *)m_items); m_items = 0; \
     } else { \
         m_items = (T *)realloc(m_items, (m_count - 1) * sizeof(T)); \
     } \
@@ -89,7 +88,7 @@ void List::move_to_end(long index) { \
     T temp(m_items[index]); \
     m_items[index].T::~T(); \
     if (index < m_count-1) memmove(m_items+index, m_items+index+1, \
-				   (m_count-index-1) * sizeof(T)); \
+                                   (m_count-index-1) * sizeof(T)); \
     new (&m_items[m_count-1], this) T(temp); \
 }\
 \

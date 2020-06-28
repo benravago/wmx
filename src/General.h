@@ -1,4 +1,3 @@
-/* -*- c-basic-offset: 4 indent-tabs-mode: nil -*-  vi:set ts=8 sts=4 sw=4: */
 
 #ifndef _GENERAL_H_
 #define _GENERAL_H_
@@ -176,12 +175,12 @@ declareList(AtomList, Atom);
 
 extern Boolean ignoreBadWindowErrors; // tidiness hack
 
-#define AllButtonMask	( Button1Mask | Button2Mask | Button3Mask \
-			| Button4Mask | Button5Mask )
-#define ButtonMask	( ButtonPressMask | ButtonReleaseMask )
+#define AllButtonMask   ( Button1Mask | Button2Mask | Button3Mask \
+                        | Button4Mask | Button5Mask )
+#define ButtonMask      ( ButtonPressMask | ButtonReleaseMask )
 #define DragMask        ( ButtonMask | ButtonMotionMask )
-#define MenuMask	( ButtonMask | ButtonMotionMask | ExposureMask )
-#define MenuGrabMask	( ButtonMask | ButtonMotionMask | StructureNotifyMask \
-			  | SubstructureNotifyMask )
+#define MenuMask        ( ButtonMask | ButtonMotionMask | ExposureMask )
+#define MenuGrabMask    ( ButtonMask | ButtonMotionMask | StructureNotifyMask \
+                          | SubstructureNotifyMask )
 
 #endif

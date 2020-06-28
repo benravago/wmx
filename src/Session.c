@@ -1,4 +1,3 @@
-/* -*- c-basic-offset: 4 indent-tabs-mode: nil -*-  vi:set ts=8 sts=4 sw=4: */
 
 #include "Manager.h"
 
@@ -7,7 +6,7 @@
 #if CONFIG_USE_SESSION_MANAGER != False
 
 void WindowManager::smWatchFD(IceConn c, IcePointer wmp,
-			      Bool opening, IcePointer *)
+                              Bool opening, IcePointer *)
 {
     WindowManager *wm = (WindowManager *)wmp;
 
@@ -21,7 +20,7 @@ void WindowManager::smWatchFD(IceConn c, IcePointer wmp,
         if (IceConnectionNumber(c) == wm->m_smFD) {
             fprintf(stderr, "wmx: ICE connection closing\n");
             wm->m_smFD = -1;
-	}
+        }
     }
 }
 
@@ -45,15 +44,15 @@ void WindowManager::smDie(SmcConn c, SmPointer wmp)
 
     SmcCloseConnection(c, 0, NULL);
     if (c == wm->m_smConnection) {
-	wm->m_smConnection = NULL;
-	wm->m_smIceConnection = NULL;
+        wm->m_smConnection = NULL;
+        wm->m_smIceConnection = NULL;
     }
 }
 
 void WindowManager::initialiseSession(char *sessionProg, char *oldSessionId)
 {
     if (getenv("SESSION_MANAGER") == 0) {
-	fprintf(stderr, "wmx: no SESSION_MANAGER in environment, ignoring\n");
+        fprintf(stderr, "wmx: no SESSION_MANAGER in environment, ignoring\n");
         return;
     }
 
@@ -64,7 +63,7 @@ void WindowManager::initialiseSession(char *sessionProg, char *oldSessionId)
 
     fprintf(stderr, "wmx: initialising session manager: prog is \"%s\"\n",
             sessionProg ? sessionProg : "(none)");
-	
+        
     if (sessionProg) m_sessionProgram = NewString(sessionProg);
     else m_sessionProgram = NewString("wmx");
 
@@ -85,15 +84,15 @@ void WindowManager::initialiseSession(char *sessionProg, char *oldSessionId)
     smcall.shutdown_cancelled.client_data = (SmPointer)this;
     
     if ((m_smConnection = SmcOpenConnection(NULL, /* network ids */
-					    NULL, /* context */
-					    1, 0, /* protocol major, minor */
-					    SmcSaveYourselfProcMask |
-					    SmcSaveCompleteProcMask |
-					    SmcShutdownCancelledProcMask |
-					    SmcDieProcMask,
-					    &smcall,
-					    oldSessionId, &m_newSessionId,
-					    sizeof(errStr), errStr)) == NULL) {
+                                            NULL, /* context */
+                                            1, 0, /* protocol major, minor */
+                                            SmcSaveYourselfProcMask |
+                                            SmcSaveCompleteProcMask |
+                                            SmcShutdownCancelledProcMask |
+                                            SmcDieProcMask,
+                                            &smcall,
+                                            oldSessionId, &m_newSessionId,
+                                            sizeof(errStr), errStr)) == NULL) {
         fprintf(stderr, "wmx: session manager init error: %s\n", errStr);
         return;
     }

@@ -1,4 +1,3 @@
-/* -*- c-basic-offset: 4 indent-tabs-mode: nil -*-  vi:set ts=8 sts=4 sw=4: */
 
 #include "Manager.h"
 #include "Menu.h"
@@ -85,23 +84,23 @@ WindowManager::WindowManager(int argc, char **argv) :
     char *wmxdir = getenv("WMXDIR");
     
     fprintf(stderr, "\nwmx: Copyright (c) 1996-2014 Chris Cannam."
-	    "  Not a release\n"
-	    "     Parts derived from 9wm Copyright (c) 1994-96 David Hogan\n"
-	    "     Command menu code Copyright (c) 1997 Jeremy Fitzhardinge\n"
- 	    "     Japanize code Copyright (c) 1998 Kazushi (Jam) Marukawa\n"
- 	    "     Original keyboard-menu code Copyright (c) 1998 Nakayama Shintaro\n"
-	    "     Dynamic configuration code Copyright (c) 1998 Stefan `Sec' Zehl\n"
-	    "     Multihead display code Copyright (c) 2000 Sven Oliver `SvOlli' Moll\n"
-	    "     Original NETWM code Copyright (c) 2000 Jamie Montgomery\n"
-	    "     See source distribution for other patch contributors\n"
+            "  Not a release\n"
+            "     Parts derived from 9wm Copyright (c) 1994-96 David Hogan\n"
+            "     Command menu code Copyright (c) 1997 Jeremy Fitzhardinge\n"
+            "     Japanize code Copyright (c) 1998 Kazushi (Jam) Marukawa\n"
+            "     Original keyboard-menu code Copyright (c) 1998 Nakayama Shintaro\n"
+            "     Dynamic configuration code Copyright (c) 1998 Stefan `Sec' Zehl\n"
+            "     Multihead display code Copyright (c) 2000 Sven Oliver `SvOlli' Moll\n"
+            "     Original NETWM code Copyright (c) 2000 Jamie Montgomery\n"
+            "     See source distribution for other patch contributors\n"
 #ifdef CONFIG_USE_XFT
-	    "     Copying and redistribution encouraged.  "
-	    "No warranty.\n\n"
+            "     Copying and redistribution encouraged.  "
+            "No warranty.\n\n"
 #else
-	    "     %s\n     Copying and redistribution encouraged.  "
-	    "No warranty.\n\n", XV_COPYRIGHT
+            "     %s\n     Copying and redistribution encouraged.  "
+            "No warranty.\n\n", XV_COPYRIGHT
 #endif
-	    );
+            );
 
     int i, j;
 #if CONFIG_USE_SESSION_MANAGER != False
@@ -111,133 +110,133 @@ WindowManager::WindowManager(int argc, char **argv) :
     if (argc > 1) {
 
 #if CONFIG_USE_SESSION_MANAGER != False
-	// Damn!  This means we have to support a command-line argument
-	if (argc == 3 && !strcmp(argv[1], "--sm-client-id")) {
-	    oldSessionId = argv[2];
-	} else {
+        // Damn!  This means we have to support a command-line argument
+        if (argc == 3 && !strcmp(argv[1], "--sm-client-id")) {
+            oldSessionId = argv[2];
+        } else {
 #endif
 
-	for (i = strlen(argv[0])-1; i > 0 && argv[0][i] != '/'; --i);
-	fprintf(stderr, "\nwmx: Usage: %s [--sm-client-id id]\n",
-		argv[0] + (i > 0) + i);
-	exit(2);
+        for (i = strlen(argv[0])-1; i > 0 && argv[0][i] != '/'; --i);
+        fprintf(stderr, "\nwmx: Usage: %s [--sm-client-id id]\n",
+                argv[0] + (i > 0) + i);
+        exit(2);
 
 #if CONFIG_USE_SESSION_MANAGER != False
-	}
+        }
 #endif
     }
 
     if (!setlocale(LC_ALL, ""))
- 	fprintf(stderr,
-		"Warning: locale not supported by C library, locale unchanged\n");
+        fprintf(stderr,
+                "Warning: locale not supported by C library, locale unchanged\n");
     if (!XSupportsLocale()) { 
- 	fprintf(stderr,
-		"Warning: locale not supported by Xlib, locale set to C\n");  
- 	setlocale(LC_ALL, "C");
+        fprintf(stderr,
+                "Warning: locale not supported by Xlib, locale set to C\n");  
+        setlocale(LC_ALL, "C");
     }
     if (!XSetLocaleModifiers(""))
- 	fprintf(stderr,
-		"Warning: X locale modifiers not supported, using default\n");
+        fprintf(stderr,
+                "Warning: X locale modifiers not supported, using default\n");
     char* ret_setlocale = setlocale(LC_ALL, NULL);
- 					// re-query in case overwritten
+                                        // re-query in case overwritten
     
     if (CONFIG_AUTO_RAISE) {
-	if (CONFIG_CLICK_TO_FOCUS) {
-	    fatal("can't have auto-raise-with-delay with click-to-focus");
-	} else if (CONFIG_RAISE_ON_FOCUS) {
-	    fatal("can't have raise-on-focus AND auto-raise-with-delay");
-	} else {
-	    fprintf(stderr, "     Focus follows, auto-raise with delay.");
-	}
+        if (CONFIG_CLICK_TO_FOCUS) {
+            fatal("can't have auto-raise-with-delay with click-to-focus");
+        } else if (CONFIG_RAISE_ON_FOCUS) {
+            fatal("can't have raise-on-focus AND auto-raise-with-delay");
+        } else {
+            fprintf(stderr, "     Focus follows, auto-raise with delay.");
+        }
 
     } else {
-	if (CONFIG_CLICK_TO_FOCUS) {
-	    if (CONFIG_RAISE_ON_FOCUS) {
+        if (CONFIG_CLICK_TO_FOCUS) {
+            if (CONFIG_RAISE_ON_FOCUS) {
                 if (CONFIG_PASS_FOCUS_CLICK) {
-		    fprintf(stderr, "     Click to focus, focus clicks passed on to client.");
+                    fprintf(stderr, "     Click to focus, focus clicks passed on to client.");
                 } else {
                     fprintf(stderr, "     Click to focus, focus clicks not passed on to clients.");
                 }
-	    } else {
-		fatal("can't have click-to-focus without raise-on-focus");
-	    }
-	} else {
-	    if (CONFIG_RAISE_ON_FOCUS) {
-		fprintf(stderr, "     Focus follows, auto-raise.");
-	    } else {
-		fprintf(stderr, "     Focus follows pointer.");
-	    }
-	}
+            } else {
+                fatal("can't have click-to-focus without raise-on-focus");
+            }
+        } else {
+            if (CONFIG_RAISE_ON_FOCUS) {
+                fprintf(stderr, "     Focus follows, auto-raise.");
+            } else {
+                fprintf(stderr, "     Focus follows pointer.");
+            }
+        }
     }
 
     if (CONFIG_EVERYTHING_ON_ROOT_MENU) {
-	fprintf(stderr, "\n     All clients on menu.");
+        fprintf(stderr, "\n     All clients on menu.");
     } else {
-	fprintf(stderr, "\n     Hidden clients only on menu.");
+        fprintf(stderr, "\n     Hidden clients only on menu.");
     }
 
     if (CONFIG_USE_SESSION_MANAGER) {
-	fprintf(stderr, "  Using session manager.");
+        fprintf(stderr, "  Using session manager.");
     } else {
-	fprintf(stderr, "  No session manager.");
+        fprintf(stderr, "  No session manager.");
     }
 
     if (CONFIG_PROD_SHAPE) {
-	fprintf(stderr, "\n     Shape prodding on.");
+        fprintf(stderr, "\n     Shape prodding on.");
     } else {
-	fprintf(stderr, "\n     Shape prodding off.");
+        fprintf(stderr, "\n     Shape prodding off.");
     }
 
     if (CONFIG_USE_PIXMAPS) {
-	fprintf(stderr, "  Fancy borders.");
+        fprintf(stderr, "  Fancy borders.");
     } else {
-	fprintf(stderr, "  Plain borders.");
+        fprintf(stderr, "  Plain borders.");
     }
 
     if (CONFIG_MAD_FEEDBACK) {
-	fprintf(stderr, "  Skeletal feedback on.");
+        fprintf(stderr, "  Skeletal feedback on.");
     } else {
-	fprintf(stderr, "  Skeletal feedback off.");
+        fprintf(stderr, "  Skeletal feedback off.");
     }
 
     if (CONFIG_USE_KEYBOARD) {
-	fprintf(stderr, "\n     Keyboard controls available.");
+        fprintf(stderr, "\n     Keyboard controls available.");
     } else {
-	fprintf(stderr, "\n     No keyboard controls.");
+        fprintf(stderr, "\n     No keyboard controls.");
     }
 
     if (CONFIG_WANT_KEYBOARD_MENU) {
-	fprintf(stderr, "  Keyboard menu available.");
+        fprintf(stderr, "  Keyboard menu available.");
     } else {
-	fprintf(stderr, "  No keyboard menu available.");
+        fprintf(stderr, "  No keyboard menu available.");
     }
 
     if (CONFIG_CHANNEL_SURF) {
-	fprintf(stderr, "\n     Channels on.");
+        fprintf(stderr, "\n     Channels on.");
     } else {
-	fprintf(stderr, "\n     Channels off.");
-    }	
+        fprintf(stderr, "\n     Channels off.");
+    }   
 
     if (CONFIG_USE_CHANNEL_KEYS) {
-	fprintf(stderr, "  Quick keyboard channel-surf available.");
+        fprintf(stderr, "  Quick keyboard channel-surf available.");
     } else {
-	fprintf(stderr, "  No quick keyboard channel-surf.");
+        fprintf(stderr, "  No quick keyboard channel-surf.");
     }
 
     fprintf(stderr, "\n     Operating system locale is \"%s\".",
-	    ret_setlocale ? ret_setlocale : "(NULL)");
+            ret_setlocale ? ret_setlocale : "(NULL)");
 
     fprintf(stderr, "\n     NETWM compliant.");
 
     fprintf(stderr, "\n     Command menu taken from ");
     if (wmxdir == NULL) {
-	fprintf(stderr, "%s/%s.\n", home, CONFIG_COMMAND_MENU);
+        fprintf(stderr, "%s/%s.\n", home, CONFIG_COMMAND_MENU);
     } else {
-	if (*wmxdir == '/') {
-	    fprintf(stderr, "%s.\n", wmxdir);
-	} else {
-	    fprintf(stderr, "%s/%s.\n", home, wmxdir);
-	}
+        if (*wmxdir == '/') {
+            fprintf(stderr, "%s.\n", wmxdir);
+        } else {
+            fprintf(stderr, "%s/%s.\n", home, wmxdir);
+        }
     }
 
 //    fprintf(stderr, "     (To reconfigure, simply edit and recompile.)\n\n");
@@ -257,19 +256,19 @@ WindowManager::WindowManager(int argc, char **argv) :
     XModifierKeymap *modmap = XGetModifierMapping(m_display);
     KeyCode alt = 0;
     for (i = 0; i < (kmax - kmin) * kpk; ++i) {
-	if (keymap[i] == CONFIG_ALT_KEY) {
-	    alt = kmin + (i / kpk);
-	    for (j = 0; j < (8 * modmap->max_keypermod); ++j) {
-		if (modmap->modifiermap[j] == alt) {
-		    m_altModMask = 1 << (j / modmap->max_keypermod);
-		}
-	    }
-	    if (m_altModMask) break;
-	}
+        if (keymap[i] == CONFIG_ALT_KEY) {
+            alt = kmin + (i / kpk);
+            for (j = 0; j < (8 * modmap->max_keypermod); ++j) {
+                if (modmap->modifiermap[j] == alt) {
+                    m_altModMask = 1 << (j / modmap->max_keypermod);
+                }
+            }
+            if (m_altModMask) break;
+        }
     }
 
     if (!m_altModMask) {
-	fprintf(stderr, "configured Alt keysym: 0x%x (keycode %d, 0x%x)\n",
+        fprintf(stderr, "configured Alt keysym: 0x%x (keycode %d, 0x%x)\n",
                 CONFIG_ALT_KEY, alt, alt);
         fatal("no modifier corresponds to the configured Alt keysym");
     }
@@ -315,7 +314,7 @@ WindowManager::WindowManager(int argc, char **argv) :
     Atoms::netwm_winLayer          = XInternAtom(m_display, "_WIN_LAYER",               False);
     //!!! what is this??
     Atoms::netwm_winDesktopButtonProxy 
-	                           = XInternAtom(m_display, "_WIN_DESKTOP_BUTTON_PROXY",False);
+                                   = XInternAtom(m_display, "_WIN_DESKTOP_BUTTON_PROXY",False);
     //!!! "replaced with _NET_WM_WINDOW_TYPE functional hint":
     Atoms::netwm_winHints          = XInternAtom(m_display, "_WIN_HINTS",               False);
     Atoms::netwm_winState          = XInternAtom(m_display, "_NET_WM_STATE",            False);    
@@ -340,7 +339,7 @@ WindowManager::WindowManager(int argc, char **argv) :
     
     int dummy;
     if (!XShapeQueryExtension(m_display, &m_shapeEvent, &dummy))
-	fatal("no shape extension, can't run without it");
+        fatal("no shape extension, can't run without it");
 
     initialiseScreen();
     if (m_screensTotal > 1) {
@@ -359,7 +358,7 @@ WindowManager::WindowManager(int argc, char **argv) :
 #endif
  
     XSetSelectionOwner(m_display, Atoms::wmx_running,
-		       None, timestamp(True)); // used to have m_menuWindow
+                       None, timestamp(True)); // used to have m_menuWindow
     XSync(m_display, False);
     m_initialising = False;
     m_returnCode = 0;
@@ -372,7 +371,7 @@ WindowManager::WindowManager(int argc, char **argv) :
 
 #if CONFIG_GROUPS != False
     for (int i = 0; i < 10; i++) {
-	grouping.append(new ClientList());
+        grouping.append(new ClientList());
     }
 #endif
 
@@ -381,8 +380,8 @@ WindowManager::WindowManager(int argc, char **argv) :
     updateStackingOrder();
     loop();
     if (m_restart == True){
-	fprintf(stderr,"restarting wmx from SIGHUP\n");
-	execv(argv[0],argv);
+        fprintf(stderr,"restarting wmx from SIGHUP\n");
+        execv(argv[0],argv);
     }
 }
 
@@ -412,29 +411,29 @@ void WindowManager::release()
     int i;
 
     for (i = 0; i < m_clients.count(); ++i) {
-	c = m_clients.item(i);
+        c = m_clients.item(i);
         fprintf(stderr, "release: client %d is %p\n", i, c);
 
-	if (c->isNormal() || c->isNormalButElsewhere()) normalList.append(c);
-	else unparentList.append(c);
+        if (c->isNormal() || c->isNormalButElsewhere()) normalList.append(c);
+        else unparentList.append(c);
     }
 
     for (i = normalList.count()-1; i >= 0; --i) {
-	unparentList.append(normalList.item(i));
+        unparentList.append(normalList.item(i));
     }
 
     m_clients.remove_all();
     m_hiddenClients.remove_all();
 
     for (i = 0; i < unparentList.count(); ++i) {
-	fprintf(stderr, "release: unparenting client %p\n",unparentList.item(i));
-	unparentList.item(i)->unreparent();
+        fprintf(stderr, "release: unparenting client %p\n",unparentList.item(i));
+        unparentList.item(i)->unreparent();
         fprintf(stderr, "release: releasing client %p\n", unparentList.item(i));
-	unparentList.item(i)->release();
+        unparentList.item(i)->release();
     }
 
     XSetInputFocus(m_display, PointerRoot, RevertToPointerRoot,
-		   timestamp(False));
+                   timestamp(False));
     installColormap(None);
 
     XFreeCursor(m_display, m_cursor);
@@ -462,9 +461,9 @@ void WindowManager::fatal(const char *message)
 int WindowManager::errorHandler(Display *d, XErrorEvent *e)
 {
     if (m_initialising && (e->request_code == X_ChangeWindowAttributes) &&
-	e->error_code == BadAccess) {
-	fprintf(stderr, "\nwmx: another window manager running?\n");
-	exit(1);
+        e->error_code == BadAccess) {
+        fprintf(stderr, "\nwmx: another window manager running?\n");
+        exit(1);
     }
 
     // ugh
@@ -476,13 +475,13 @@ int WindowManager::errorHandler(Display *d, XErrorEvent *e)
     XGetErrorDatabaseText(d, "XRequest", number, "", request, 100);
 
     if (request[0] == '\0') sprintf(request, "<request-code-%d>",
-				    e->request_code);
+                                    e->request_code);
 
     fprintf(stderr, "wmx: %s (0x%lx): %s\n", request, e->resourceid, msg);
 
     if (m_initialising) {
-	fprintf(stderr, "wmx: failure during initialisation, abandoning\n");
-	exit(1);
+        fprintf(stderr, "wmx: failure during initialisation, abandoning\n");
+        exit(1);
     }
 
     return 0;
@@ -490,28 +489,28 @@ int WindowManager::errorHandler(Display *d, XErrorEvent *e)
 
 
 static Cursor makeCursor(Display *d, Window w,
-			 unsigned char *bits, unsigned char *mask_bits,
-			 int width, int height, int xhot, int yhot,
-			 XColor *fg, XColor *bg, int fontIndex)
+                         unsigned char *bits, unsigned char *mask_bits,
+                         int width, int height, int xhot, int yhot,
+                         XColor *fg, XColor *bg, int fontIndex)
 {
     Cursor cursor;
 
     if (CONFIG_USE_PLAIN_X_CURSORS) {
 
-	cursor = XCreateFontCursor(d, fontIndex);
+        cursor = XCreateFontCursor(d, fontIndex);
 
     } else {
 
-	Pixmap pixmap =
-	    XCreateBitmapFromData(d, w, (const char *)bits, width, height);
-	
-	Pixmap mask =
-	    XCreateBitmapFromData(d, w, (const char *)mask_bits, width,height);
+        Pixmap pixmap =
+            XCreateBitmapFromData(d, w, (const char *)bits, width, height);
+        
+        Pixmap mask =
+            XCreateBitmapFromData(d, w, (const char *)mask_bits, width,height);
 
-	cursor = XCreatePixmapCursor(d, pixmap, mask, fg, bg, xhot, yhot);
+        cursor = XCreatePixmapCursor(d, pixmap, mask, fg, bg, xhot, yhot);
 
-	XFreePixmap(d, pixmap);
-	XFreePixmap(d, mask);
+        XFreePixmap(d, pixmap);
+        XFreePixmap(d, mask);
     }
 
     return cursor;
@@ -541,7 +540,7 @@ void WindowManager::initialiseScreen()
     for (i = 0 ; i < m_screensTotal ; i++) {
 
         m_screenNumber = i;
-	m_channelWindow[i] = 0;
+        m_channelWindow[i] = 0;
 
         m_root[i] = RootWindow(m_display, i);
         m_defaultColormap[i] = DefaultColormap(m_display, i);
@@ -550,41 +549,41 @@ void WindowManager::initialiseScreen()
         XColor black, white, temp;
 
         if (!XAllocNamedColor(m_display, m_defaultColormap[i], "black", &black, &temp))
-	fatal("couldn't load colour \"black\"!");
+        fatal("couldn't load colour \"black\"!");
         if (!XAllocNamedColor(m_display, m_defaultColormap[i], "white", &white, &temp))
-	fatal("couldn't load colour \"white\"!");
+        fatal("couldn't load colour \"white\"!");
 
         m_cursor = makeCursor
-	(m_display, m_root[i], cursor_bits, cursor_mask_bits,
-	 cursor_width, cursor_height, cursor_x_hot,
-	 cursor_y_hot, &black, &white, XC_top_left_arrow);
+        (m_display, m_root[i], cursor_bits, cursor_mask_bits,
+         cursor_width, cursor_height, cursor_x_hot,
+         cursor_y_hot, &black, &white, XC_top_left_arrow);
 
         m_xCursor = makeCursor
-	(m_display, m_root[i], ninja_cross_bits, ninja_cross_mask_bits,
-	 ninja_cross_width, ninja_cross_height, ninja_cross_x_hot,
-	 ninja_cross_y_hot, &black, &white, XC_X_cursor);
+        (m_display, m_root[i], ninja_cross_bits, ninja_cross_mask_bits,
+         ninja_cross_width, ninja_cross_height, ninja_cross_x_hot,
+         ninja_cross_y_hot, &black, &white, XC_X_cursor);
 
         m_hCursor = makeCursor
-	(m_display, m_root[i], cursor_right_bits, cursor_right_mask_bits,
-	 cursor_right_width, cursor_right_height, cursor_right_x_hot,
-	 cursor_right_y_hot, &black, &white, XC_right_side);
+        (m_display, m_root[i], cursor_right_bits, cursor_right_mask_bits,
+         cursor_right_width, cursor_right_height, cursor_right_x_hot,
+         cursor_right_y_hot, &black, &white, XC_right_side);
 
         m_vCursor = makeCursor
-	(m_display, m_root[i], cursor_down_bits, cursor_down_mask_bits,
-	 cursor_down_width, cursor_down_height, cursor_down_x_hot,
-	 cursor_down_y_hot, &black, &white, XC_bottom_side);
+        (m_display, m_root[i], cursor_down_bits, cursor_down_mask_bits,
+         cursor_down_width, cursor_down_height, cursor_down_x_hot,
+         cursor_down_y_hot, &black, &white, XC_bottom_side);
 
         m_vhCursor = makeCursor
-	(m_display, m_root[i], cursor_down_right_bits, cursor_down_right_mask_bits,
-	 cursor_down_right_width, cursor_down_right_height,
-	 cursor_down_right_x_hot, cursor_down_right_y_hot, &black, &white,
-	 XC_bottom_right_corner);
+        (m_display, m_root[i], cursor_down_right_bits, cursor_down_right_mask_bits,
+         cursor_down_right_width, cursor_down_right_height,
+         cursor_down_right_x_hot, cursor_down_right_y_hot, &black, &white,
+         XC_bottom_right_corner);
 
         XSetWindowAttributes attr;
         attr.cursor = m_cursor;
         attr.event_mask = SubstructureRedirectMask | SubstructureNotifyMask |
-	ColormapChangeMask | ButtonPressMask | ButtonReleaseMask | 
-	PropertyChangeMask | LeaveWindowMask | KeyPressMask | KeyReleaseMask;
+        ColormapChangeMask | ButtonPressMask | ButtonReleaseMask | 
+        PropertyChangeMask | LeaveWindowMask | KeyPressMask | KeyReleaseMask;
 
         XChangeWindowAttributes(m_display, m_root[i], CWCursor | CWEventMask, &attr);
         XSync(m_display, False);
@@ -604,12 +603,12 @@ unsigned long WindowManager::allocateColour(int screen, const char *name,
     XColor nearest, ideal;
 
     if (!XAllocNamedColor
-	(display(), DefaultColormap(display(), screen), name,
-	 &nearest, &ideal)) {
+        (display(), DefaultColormap(display(), screen), name,
+         &nearest, &ideal)) {
 
-	char error[100];
-	sprintf(error, "couldn't load %s colour", desc);
-	fatal(error);
+        char error[100];
+        sprintf(error, "couldn't load %s colour", desc);
+        fatal(error);
     }
 
     return nearest.pixel;
@@ -636,7 +635,7 @@ void WindowManager::installCursorOnWindow(RootCursor c, Window w)
 
     XChangeWindowAttributes(m_display, w, CWCursor, &attr);
 }
-	
+        
 
 Time WindowManager::timestamp(Boolean reset)
 {
@@ -644,13 +643,13 @@ Time WindowManager::timestamp(Boolean reset)
 
     if (m_currentTime == CurrentTime) {
 
-	XEvent event;
-	XChangeProperty(m_display, root(), Atoms::wmx_running,
-			Atoms::wmx_running, 8, PropModeAppend,
-			(unsigned char *)"", 0);
-	XMaskEvent(m_display, PropertyChangeMask, &event);
+        XEvent event;
+        XChangeProperty(m_display, root(), Atoms::wmx_running,
+                        Atoms::wmx_running, 8, PropModeAppend,
+                        (unsigned char *)"", 0);
+        XMaskEvent(m_display, PropertyChangeMask, &event);
 
-	m_currentTime = event.xproperty.time;
+        m_currentTime = event.xproperty.time;
     }
 
     return m_currentTime;
@@ -661,7 +660,7 @@ void WindowManager::sigHandler(int signal)
     fprintf(stderr, "WindowManager::sigHandler: signal %d\n", signal);
     m_signalled = True;
     if (signal == SIGHUP)
-	m_restart = True;
+        m_restart = True;
 }
 
 void WindowManager::scanInitialWindows()
@@ -677,11 +676,11 @@ void WindowManager::scanInitialWindows()
 
         for (i = 0; i < n; ++i) {
 
-	    XGetWindowAttributes(m_display, wins[i], &attr);
-//	    if (attr.override_redirect || wins[i] == m_menuWindow) continue;
-	    if (attr.override_redirect) continue;
-	    (void)windowToClient(wins[i], True);
-	}
+            XGetWindowAttributes(m_display, wins[i], &attr);
+//          if (attr.override_redirect || wins[i] == m_menuWindow) continue;
+            if (attr.override_redirect) continue;
+            (void)windowToClient(wins[i], True);
+        }
 
         XFree((void *)wins);
     }
@@ -694,9 +693,9 @@ Client *WindowManager::windowToClient(Window w, Boolean create)
 
     for (int i = m_clients.count()-1; i >= 0; --i) {
 
-	if (m_clients.item(i)->hasWindow(w)) {
-	    return m_clients.item(i);
-	}
+        if (m_clients.item(i)->hasWindow(w)) {
+            return m_clients.item(i);
+        }
     }
 
     if (!create) return 0;
@@ -716,35 +715,35 @@ Client *WindowManager::windowToClient(Window w, Boolean create)
         int y_clip = 0;
 
         (void)XShapeQueryExtents(m_display, w, &bounding_shape, 
-				 &x_bounding, &y_bounding, 
-				 &w_bounding, &h_bounding, &clip_shape,
-				 &x_clip, &y_clip, &w_clip, &h_clip);
+                                 &x_bounding, &y_bounding, 
+                                 &w_bounding, &h_bounding, &clip_shape,
+                                 &x_clip, &y_clip, &w_clip, &h_clip);
 
-	newC = new Client(this, w, bounding_shape==1);
-	m_clients.append(newC);
-	
-	if (m_currentChannel == m_channels) {
-	    createNewChannel();
-	}
+        newC = new Client(this, w, bounding_shape==1);
+        m_clients.append(newC);
+        
+        if (m_currentChannel == m_channels) {
+            createNewChannel();
+        }
 
-	return newC;
+        return newC;
     }
 }
 
 void WindowManager::installColormap(Colormap cmap)
 {
     if (cmap == None) {
-	XInstallColormap(m_display, m_defaultColormap[screen()]);
-//	XInstallColormap(m_display, m_defaultColormap);
+        XInstallColormap(m_display, m_defaultColormap[screen()]);
+//      XInstallColormap(m_display, m_defaultColormap);
     } else {
-	XInstallColormap(m_display, cmap);
+        XInstallColormap(m_display, cmap);
     }
 }
 
 void WindowManager::setActiveClient(Client *const c)
 {
     if (m_activeClient && m_activeClient != c) {
-	m_activeClient->deactivate();
+        m_activeClient->deactivate();
     }
     m_activeClient = c;
 
@@ -758,36 +757,36 @@ void WindowManager::clearFocus()
     Client *active = activeClient();
 
     if (CONFIG_AUTO_RAISE || !CONFIG_CLICK_TO_FOCUS) {
-	setActiveClient(0);
-	return;
+        setActiveClient(0);
+        return;
     }
 
     if (active) {
 
-	setActiveClient(0);
-	active->deactivate();
+        setActiveClient(0);
+        active->deactivate();
 
-	for (Client *c = active->revertTo(); c; c = c->revertTo()) {
-	    if (c->isNormal()) {
-		c->activate();
-		return;
-	    }
-	}
+        for (Client *c = active->revertTo(); c; c = c->revertTo()) {
+            if (c->isNormal()) {
+                c->activate();
+                return;
+            }
+        }
 
-	installColormap(None);
+        installColormap(None);
     }
 
     if (w == 0) {
 
-	XSetWindowAttributes attr;
-	int mask = CWOverrideRedirect;
-	attr.override_redirect = 1;
+        XSetWindowAttributes attr;
+        int mask = CWOverrideRedirect;
+        attr.override_redirect = 1;
 
-	w = XCreateWindow(display(), root(), 0, 0, 1, 1, 0,
-			  CopyFromParent, InputOnly, CopyFromParent,
-			  mask, &attr);
+        w = XCreateWindow(display(), root(), 0, 0, 1, 1, 0,
+                          CopyFromParent, InputOnly, CopyFromParent,
+                          mask, &attr);
 
-	XMapWindow(display(), w);
+        XMapWindow(display(), w);
     }
 
     XSetInputFocus(display(), w, RevertToPointerRoot, timestamp(False));
@@ -797,10 +796,10 @@ void WindowManager::clearFocus()
 void WindowManager::skipInRevert(Client *c, Client *myRevert)
 {
     for (int i = 0; i < m_clients.count(); ++i) {
-	if (m_clients.item(i) != c &&
-	    m_clients.item(i)->revertTo() == c) {
-	    m_clients.item(i)->setRevertTo(myRevert);
-	}
+        if (m_clients.item(i) != c &&
+            m_clients.item(i)->revertTo() == c) {
+            m_clients.item(i)->setRevertTo(myRevert);
+        }
     }
 }
 
@@ -808,7 +807,7 @@ void WindowManager::skipInRevert(Client *c, Client *myRevert)
 void WindowManager::addToHiddenList(Client *c)
 {
     for (int i = 0; i < m_hiddenClients.count(); ++i) {
-	if (m_hiddenClients.item(i) == c) return;
+        if (m_hiddenClients.item(i) == c) return;
     }
 
     m_hiddenClients.append(c);
@@ -822,24 +821,24 @@ void WindowManager::removeFromHiddenList(Client *c)
     fprintf(stderr, "WindowManager::removeFromHiddenList(%p)\n", c);
 
     for (int i = 0; i < m_hiddenClients.count(); ++i) {
-	if (m_hiddenClients.item(i) == c) {
-	    m_hiddenClients.remove(i);
+        if (m_hiddenClients.item(i) == c) {
+            m_hiddenClients.remove(i);
 
-	    if (c->channel() != m_currentChannel) {
+            if (c->channel() != m_currentChannel) {
 
-		while (c->channel() != m_currentChannel) {
-		    if (m_currentChannel < c->channel()) {
-			flipChannel(False, False, True, 0);
-		    } else {
-			flipChannel(False, True, True, 0);
-		    }
-		    XSync(display(), False);
-		}
-	    } else {
-		netwmUpdateWindowList(); 
-	    }
-	    return;
-	}
+                while (c->channel() != m_currentChannel) {
+                    if (m_currentChannel < c->channel()) {
+                        flipChannel(False, False, True, 0);
+                    } else {
+                        flipChannel(False, True, True, 0);
+                    }
+                    XSync(display(), False);
+                }
+            } else {
+                netwmUpdateWindowList(); 
+            }
+            return;
+        }
     }
 }
 
@@ -852,11 +851,11 @@ void WindowManager::hoistToTop(Client *c)
     int layer = c->layer();
 
     for (i = 0; i < m_orderedClients[layer].count(); ++i) {
-	if (m_orderedClients[layer].item(i) == c) {
-	    m_orderedClients[layer].move_to_start(i);
+        if (m_orderedClients[layer].item(i) == c) {
+            m_orderedClients[layer].move_to_start(i);
             netwmUpdateWindowList();
             return;
-	}
+        }
     }
 
     m_orderedClients[layer].append(c);
@@ -871,11 +870,11 @@ void WindowManager::hoistToBottom(Client *c)
     int layer=c->layer();
 
     for (i = 0; i < m_orderedClients[layer].count(); ++i) {
-	if (m_orderedClients[layer].item(i) == c) {
-	    m_orderedClients[layer].move_to_end(i);
+        if (m_orderedClients[layer].item(i) == c) {
+            m_orderedClients[layer].move_to_end(i);
             netwmUpdateWindowList();
             return;
-	}
+        }
     }
 
     m_orderedClients[layer].append(c);
@@ -891,11 +890,11 @@ void WindowManager::removeFromOrderedList(Client *c)
             c, layer);
 
     for (int i = 0; i < m_orderedClients[layer].count(); ++i) {
-	if (m_orderedClients[layer].item(i) == c) {
-	    m_orderedClients[layer].remove(i);
-	    netwmUpdateWindowList(); 
-	    return;
-	}
+        if (m_orderedClients[layer].item(i) == c) {
+            m_orderedClients[layer].remove(i);
+            netwmUpdateWindowList(); 
+            return;
+        }
     }
 }
     
@@ -916,11 +915,11 @@ void WindowManager::withdrawGroup(Window groupParent, Client *omit, Boolean chan
 {
     for (int layer = MAX_LAYER; layer >= 0; --layer)
     for (int i = 0; i < m_orderedClients[layer].count(); ++i) {
-	Client *ic = m_orderedClients[layer].item(i);
-	if (ic->groupParent() == groupParent && !ic->isGroupParent() &&
-	    ic != omit) {
-	    ic->withdraw(changeState);
-	}
+        Client *ic = m_orderedClients[layer].item(i);
+        if (ic->groupParent() == groupParent && !ic->isGroupParent() &&
+            ic != omit) {
+            ic->withdraw(changeState);
+        }
     }
 }
 
@@ -928,11 +927,11 @@ void WindowManager::hideGroup(Window groupParent, Client *omit)
 {    
     for (int layer = MAX_LAYER; layer >= 0; --layer)
     for (int i = 0; i < m_orderedClients[layer].count(); ++i) {
-	Client *ic = m_orderedClients[layer].item(i);
-	if (ic->groupParent() == groupParent && !ic->isGroupParent() &&
-	    ic != omit) {
-	    ic->hide();
-	}
+        Client *ic = m_orderedClients[layer].item(i);
+        if (ic->groupParent() == groupParent && !ic->isGroupParent() &&
+            ic != omit) {
+            ic->hide();
+        }
     }
 }
 
@@ -940,11 +939,11 @@ void WindowManager::unhideGroup(Window groupParent, Client *omit, Boolean map)
 {
     for (int layer = MAX_LAYER; layer >= 0; --layer)
     for (int i = 0; i < m_orderedClients[layer].count(); ++i) {
-	Client *ic = m_orderedClients[layer].item(i);
-	if (ic->groupParent() == groupParent && !ic->isGroupParent() &&
-	    ic != omit) {
-	    ic->unhide(map);
-	}
+        Client *ic = m_orderedClients[layer].item(i);
+        if (ic->groupParent() == groupParent && !ic->isGroupParent() &&
+            ic != omit) {
+            ic->unhide(map);
+        }
     }
 }
 
@@ -952,11 +951,11 @@ void WindowManager::killGroup(Window groupParent, Client *omit)
 {
     for (int layer = MAX_LAYER; layer >= 0; --layer)
     for (int i = 0; i < m_orderedClients[layer].count(); ++i) {
-	Client *ic = m_orderedClients[layer].item(i);
-	if (ic->groupParent() == groupParent && !ic->isGroupParent() &&
-	    ic != omit) {
-	    ic->kill();
-	}
+        Client *ic = m_orderedClients[layer].item(i);
+        if (ic->groupParent() == groupParent && !ic->isGroupParent() &&
+            ic != omit) {
+            ic->kill();
+        }
     }
 }
 
@@ -969,28 +968,28 @@ Boolean WindowManager::raiseTransients(Client *c)
 
     for (int i = 0; i < m_clients.count(); ++i) {
 
-	if (m_clients.item(i)->isNormal() &&
-	    m_clients.item(i)->isTransient()) {
+        if (m_clients.item(i)->isNormal() &&
+            m_clients.item(i)->isTransient()) {
 
-	    if (c->hasWindow(m_clients.item(i)->transientFor())) {
+            if (c->hasWindow(m_clients.item(i)->transientFor())) {
 
-		if (!first) first = m_clients.item(i);
-		else m_clients.item(i)->mapRaised();
-	    }
-	}
+                if (!first) first = m_clients.item(i);
+                else m_clients.item(i)->mapRaised();
+            }
+        }
     }
 
     if (first) {
-	first->mapRaised();
-	return True;
+        first->mapRaised();
+        return True;
     } else {
-	return False;
+        return False;
     }
 }
 
 #ifdef sgi
 extern "C" {
-extern int putenv(char *);	/* not POSIX */
+extern int putenv(char *);      /* not POSIX */
 }
 #endif
 
@@ -1001,51 +1000,51 @@ void WindowManager::spawn(char *name, char *file)
     char *displayName = DisplayString(m_display);
 
     if (fork() == 0) {
-	if (fork() == 0) {
+        if (fork() == 0) {
 
-	    close(ConnectionNumber(m_display));
+            close(ConnectionNumber(m_display));
 
-	    // if you don't have putenv, miss out this next
-	    // conditional and its contents
+            // if you don't have putenv, miss out this next
+            // conditional and its contents
 
-	    if (displayName && (displayName[0] != '\0')) {
-		char *c;
-		char *pstring = (char *)malloc(strlen(displayName) + 11 +
-					       numdigits(screen()));
-		sprintf(pstring, "DISPLAY=%s", displayName);
+            if (displayName && (displayName[0] != '\0')) {
+                char *c;
+                char *pstring = (char *)malloc(strlen(displayName) + 11 +
+                                               numdigits(screen()));
+                sprintf(pstring, "DISPLAY=%s", displayName);
                 c = strrchr(pstring, '.');
                 if (c) {
                   sprintf(c + 1, "%d", screen());
                   putenv(pstring);
                 }
-	    }
+            }
 
-	    if (CONFIG_EXEC_USING_SHELL) {
-		if (file) execl(m_shell, m_shell, "-c", file, NULL);
-		else execl(m_shell, m_shell, "-c", name, NULL);
-		fprintf(stderr, "wmx: exec %s", m_shell);
-		perror(" failed");
-	    }
+            if (CONFIG_EXEC_USING_SHELL) {
+                if (file) execl(m_shell, m_shell, "-c", file, NULL);
+                else execl(m_shell, m_shell, "-c", name, NULL);
+                fprintf(stderr, "wmx: exec %s", m_shell);
+                perror(" failed");
+            }
 
-	    if (file) {
-		execl(file, name, NULL);
-	    }
-	    else {
-		if (strcmp(CONFIG_NEW_WINDOW_COMMAND, name)) {
-		    execlp(name, name, NULL);
-		}
-		else {
-			execlp(name, name, CONFIG_NEW_WINDOW_COMMAND_OPTIONS, NULL);
-		}
-	    }
+            if (file) {
+                execl(file, name, NULL);
+            }
+            else {
+                if (strcmp(CONFIG_NEW_WINDOW_COMMAND, name)) {
+                    execlp(name, name, NULL);
+                }
+                else {
+                        execlp(name, name, CONFIG_NEW_WINDOW_COMMAND_OPTIONS, NULL);
+                }
+            }
 
-	    XBell(display(), 70);
-	    fprintf(stderr, "wmx: exec %s:%s failed (errno %d)\n",
-		    name, file, errno);
+            XBell(display(), 70);
+            fprintf(stderr, "wmx: exec %s:%s failed (errno %d)\n",
+                    name, file, errno);
 
-	    exit(1);
-	}
-	exit(0);
+            exit(1);
+        }
+        exit(0);
     }
     wait((int *) 0);
 }
@@ -1138,9 +1137,9 @@ void WindowManager::updateStackingOrder()
         int top = m_orderedClients[layer].count();
         for (int i = 0; i < top; ++i) {
             Client *c = m_orderedClients[layer].item(i);
-	    if (!c->isKilled() && (c->channel()==channel()  || c->isSticky()) && !c->isHidden()) {
+            if (!c->isKilled() && (c->channel()==channel()  || c->isSticky()) && !c->isHidden()) {
                 *(windowIter++)=c->parent();
-	    }
+            }
         }
     }
      
@@ -1235,7 +1234,7 @@ void WindowManager::netwmUpdateStackingOrder()
         int top = m_orderedClients[layer].count();
         for (int i = top - 1; i >= 0; --i) {
             Client *c = m_orderedClients[layer].item(i);
-	    if (c->isWithdrawn() || c->isKilled() || c->isHidden()) continue;
+            if (c->isWithdrawn() || c->isKilled() || c->isHidden()) continue;
             byStacking[count++] = c->window();
 //            fprintf(stderr, "[netwm] stacking order: item %d is window %lx, client \"%s\"\n", count, c->window(), c->name());
         }
@@ -1276,9 +1275,9 @@ void WindowManager::netwmUpdateChannelList()
     XTextProperty textProp;
 
     if (XStringListToTextProperty(names, chan, &textProp)) {
-	XSetTextProperty
+        XSetTextProperty
             (m_display, m_root[0], &textProp, Atoms::netwm_desktopNames);
-	XFree(textProp.value);
+        XFree(textProp.value);
     }
     
     for (i = 0; i < (int)chan; i++) delete[] names[i];

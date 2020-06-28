@@ -75,7 +75,7 @@ private:
 #define CONFIG_EVERYTHING_ON_ROOT_MENU (DynamicConfig::config.fullMenu())
 
 // Spawn a temporary new shell between the wm and each new process?
-#define CONFIG_EXEC_USING_SHELL   False
+#define CONFIG_EXEC_USING_SHELL   True
 
 // What to run to get a new window (from the "New" menu option)
 #define CONFIG_NEW_WINDOW_LABEL "New"
@@ -94,7 +94,7 @@ private:
 // middle-button menu
 #define CONFIG_COMMAND_MENU       ".wmx"
 // only used if COMMAND_MENU is not found; ignored if invalid directory:
-#define CONFIG_SYSTEM_COMMAND_MENU	"/usr/local/lib/wmx/menu"
+#define CONFIG_SYSTEM_COMMAND_MENU      "/usr/local/lib/wmx/menu"
 // append screennumber to COMMAND_MENU directory;
 // use non screen style as fallback
 #define CONFIG_ADD_SCREEN_TO_COMMAND_MENU False
@@ -159,7 +159,7 @@ private:
 // topmost window will lower instead of raising it (patch due to
 // Kazushi (Jam) Marukawa)
 
-#define CONFIG_RAISELOWER_ON_CLICK	False
+#define CONFIG_RAISELOWER_ON_CLICK      False
 
 // If USE_WINDOW_GROUPS is True, then if an application marks a mapped
 // window as a group leader, when iconified, moved between desktops,
@@ -169,18 +169,18 @@ private:
 // This is different from the group stuff from Henri Naccache to be
 // found further down this file
 
-#define CONFIG_USE_WINDOW_GROUPS	True
+#define CONFIG_USE_WINDOW_GROUPS        True
 
 // If USE_SESSION_MANAGER is True, and you have an Xsmc session
 // manager running, wmx will respond to session manager callbacks and
 // notify the session manager of its restart command.
 
-#define CONFIG_USE_SESSION_MANAGER	True
+#define CONFIG_USE_SESSION_MANAGER      True
 
 // Specify the maximum length of an entry in the client menu or the command
 // menu. Set this to zero if you want no limitation
 
-#define MENU_ENTRY_MAXLENGTH		80
+#define MENU_ENTRY_MAXLENGTH            80
 
 
 // ========================
@@ -220,37 +220,37 @@ private:
 
 // The next two may clash badly with Emacs, if you use Alt as the
 // modifier.  The commented variants might work better for some.
-#define CONFIG_CIRCULATE_KEY	XK_Tab
-//#define CONFIG_CIRCULATE_KEY	XK_grave
-//#define CONFIG_CIRCULATE_KEY	XK_section
-#define CONFIG_DESTROY_KEY	XK_BackSpace
-//#define CONFIG_DESTROY_KEY	XK_Delete
-//#define CONFIG_DESTROY_KEY	XK_Insert
+#define CONFIG_CIRCULATE_KEY    XK_Tab
+//#define CONFIG_CIRCULATE_KEY  XK_grave
+//#define CONFIG_CIRCULATE_KEY  XK_section
+#define CONFIG_DESTROY_KEY      XK_BackSpace
+//#define CONFIG_DESTROY_KEY    XK_Delete
+//#define CONFIG_DESTROY_KEY    XK_Insert
 
 // If WANT_KEYBOARD_MENU is True, then the MENU_KEY, when pressed with
 // the modifier, will call up a client menu with keyboard navigation
-#define CONFIG_WANT_KEYBOARD_MENU	True
-#define CONFIG_CLIENT_MENU_KEY		XK_Menu
-#define CONFIG_COMMAND_MENU_KEY		XK_Multi_key
-#define CONFIG_EXIT_ON_KBD_MENU		True
+#define CONFIG_WANT_KEYBOARD_MENU       True
+#define CONFIG_CLIENT_MENU_KEY          XK_Menu
+#define CONFIG_COMMAND_MENU_KEY         XK_Multi_key
+#define CONFIG_EXIT_ON_KBD_MENU         True
 // these are for navigating on the menu; they don't require a modifier
-#define CONFIG_MENU_UP_KEY	XK_Up
-#define CONFIG_MENU_DOWN_KEY	XK_Down
-#define CONFIG_MENU_SELECT_KEY	XK_Return
-#define CONFIG_MENU_CANCEL_KEY	XK_Escape
+#define CONFIG_MENU_UP_KEY      XK_Up
+#define CONFIG_MENU_DOWN_KEY    XK_Down
+#define CONFIG_MENU_SELECT_KEY  XK_Return
+#define CONFIG_MENU_CANCEL_KEY  XK_Escape
 
 // Useful for fortunate people with Sun Type-5 keyboards.  These don't
 // require the modifier to be pressed.
-#define CONFIG_WANT_SUNKEYS	True
-#define CONFIG_WANT_SUNPOWERKEY	True
-#define CONFIG_QUICKRAISE_KEY	XK_F15
-#define CONFIG_QUICKHIDE_KEY	XK_F17
-#define CONFIG_QUICKHEIGHT_KEY	XK_F13
-#define CONFIG_QUICKCLOSE_KEY	XK_F11
+#define CONFIG_WANT_SUNKEYS     True
+#define CONFIG_WANT_SUNPOWERKEY True
+#define CONFIG_QUICKRAISE_KEY   XK_F15
+#define CONFIG_QUICKHIDE_KEY    XK_F17
+#define CONFIG_QUICKHEIGHT_KEY  XK_F13
+#define CONFIG_QUICKCLOSE_KEY   XK_F11
 #define CONFIG_QUICKRAISE_ALSO_LOWERS True 
-#define CONFIG_SUNPOWER_EXEC	"/usr/openwin/bin/sys-suspend"
-#define CONFIG_SUNPOWER_OPTIONS	"-x","-h",0
-#define CONFIG_SUNPOWER_SHIFTOPTIONS	"-x","-n",0
+#define CONFIG_SUNPOWER_EXEC    "/usr/openwin/bin/sys-suspend"
+#define CONFIG_SUNPOWER_OPTIONS "-x","-h",0
+#define CONFIG_SUNPOWER_SHIFTOPTIONS    "-x","-n",0
 
 // Mouse Configuration
 // Use this section to remap your mouse button actions.
@@ -260,10 +260,10 @@ private:
 // at all, define it to CONFIG_NO_BUTTON.
 #define CONFIG_NO_BUTTON 999
 #define CONFIG_CLIENTMENU_BUTTON  Button1
-#define CONFIG_COMMANDMENU_BUTTON Button2
-#define CONFIG_CIRCULATE_BUTTON   Button3 // switch window, when over frame
-#define CONFIG_PREVCHANNEL_BUTTON Button5 // flip channel, when over frame
-#define CONFIG_NEXTCHANNEL_BUTTON Button4 // flip channel, when over frame
+#define CONFIG_COMMANDMENU_BUTTON Button3
+#define CONFIG_CIRCULATE_BUTTON   999 // switch window, when over frame
+#define CONFIG_PREVCHANNEL_BUTTON 999 // flip channel, when over frame
+#define CONFIG_NEXTCHANNEL_BUTTON 999 // flip channel, when over frame
 
 
 // ==============================
@@ -285,10 +285,10 @@ private:
 
 //!!! no proper way to handle italic/bold yet
 
-#define CONFIG_FRAME_FONT "Bitstream Vera Sans,Lucida Sans Unicode"
+#define CONFIG_FRAME_FONT "DejaVu Sans"
 #define CONFIG_FRAME_FONT_SIZE 12
 
-#define CONFIG_MENU_FONT "Bitstream Vera Sans,Lucida Sans Unicode"
+#define CONFIG_MENU_FONT "DejaVu Sans"
 #define CONFIG_MENU_FONT_SIZE 12
 
 #else
@@ -298,9 +298,9 @@ private:
 // can't find one of the NICE ones.  These are font lists, rather than
 // single fonts
 
-#define CONFIG_NICE_FONT	  "-*-lucida-bold-r-*-*-14-*-75-75-*-*-*-*,-*-*-medium-r-*-*-14-*-75-75-*-*-*-*"
-#define CONFIG_NICE_MENU_FONT	  "-*-lucida-medium-r-*-*-14-*-75-75-*-*-*-*,-*-*-medium-r-*-*-14-*-75-75-*-*-*-*"
-#define CONFIG_NASTY_FONT	  "fixed,-*-*-*-*-*-*-14-*-75-75-*-*-*-*"
+#define CONFIG_NICE_FONT          "-*-lucida-bold-r-*-*-14-*-75-75-*-*-*-*,-*-*-medium-r-*-*-14-*-75-75-*-*-*-*"
+#define CONFIG_NICE_MENU_FONT     "-*-lucida-medium-r-*-*-14-*-75-75-*-*-*-*,-*-*-medium-r-*-*-14-*-75-75-*-*-*-*"
+#define CONFIG_NASTY_FONT         "fixed,-*-*-*-*-*-*-14-*-75-75-*-*-*-*"
 
 #endif
 
@@ -316,7 +316,7 @@ private:
 // endian machines, or if you've aliased the cursor font to something
 // else you like better, or if you just prefer the plain X cursors
 
-#define CONFIG_USE_PLAIN_X_CURSORS	True
+#define CONFIG_USE_PLAIN_X_CURSORS      True
 
 // Colours for window decorations.  The BORDERS one is for the
 // one-pixel border around the edge of each piece of decoration, not
@@ -327,7 +327,7 @@ private:
 #define CONFIG_FRAME_BACKGROUND   (DynamicConfig::config.frameBackground())
 #define CONFIG_BUTTON_BACKGROUND  (DynamicConfig::config.frameBackground())
 #define CONFIG_BORDERS            "black"
-#define CONFIG_CHANNEL_NUMBER	  "green"
+#define CONFIG_CHANNEL_NUMBER     "green"
 #define CONFIG_CLOCK_NUMBER       "gray90"
 
 #define CONFIG_MENU_FOREGROUND    (DynamicConfig::config.tabForeground())
@@ -349,8 +349,8 @@ private:
 // will be too.  The latter screws up in palette-based visuals, but
 // should be okay in true-colour.
 
-#define CONFIG_USE_PIXMAPS        True
-#define CONFIG_USE_PIXMAP_MENUS   True
+#define CONFIG_USE_PIXMAPS        False
+#define CONFIG_USE_PIXMAP_MENUS   False
 
 // Set CHANNEL_SURF for multi-channel switching; CHANNEL_CLICK_SIZE is
 // how close you have to middle-button-click to the top-right corner
@@ -360,10 +360,10 @@ private:
 // if you want to change channels via a keyboard-controlled menu
 // instead of linearly up and down one at a time like TV.
 
-#define CONFIG_CHANNEL_SURF       True
+#define CONFIG_CHANNEL_SURF       False
 #define CONFIG_CHANNEL_CLICK_SIZE 120
 #define CONFIG_CHANNEL_NUMBER_SIZE 20
-#define CONFIG_USE_CHANNEL_KEYS   True
+#define CONFIG_USE_CHANNEL_KEYS   False
 #define CONFIG_USE_CHANNEL_MENU   False
 
 // FLIP_DELAY is the length of time the big green number stays in the

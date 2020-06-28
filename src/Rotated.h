@@ -24,35 +24,35 @@
 /* *** The font structures *** */
 
 struct BitmapStruct {
-    int			 bit_w;
-    int			 bit_h;
+    int                  bit_w;
+    int                  bit_h;
 
     Pixmap bm;
 };
 
 struct XRotCharStruct {
-    int			 ascent;
-    int			 descent;
-    int			 lbearing;
-    int			 rbearing;
-    int			 width;
+    int                  ascent;
+    int                  descent;
+    int                  lbearing;
+    int                  rbearing;
+    int                  width;
 
-    BitmapStruct	 glyph;
+    BitmapStruct         glyph;
 };
 
 struct XRotFontStruct {
-    int			 dir;
-    int			 height;
-    int			 max_ascent;
-    int			 max_descent;
-    int			 max_char;
-    int			 min_char;
-    char 		*name;
+    int                  dir;
+    int                  height;
+    int                  max_ascent;
+    int                  max_descent;
+    int                  max_char;
+    int                  min_char;
+    char                *name;
 
-    XFontSet		 xfontset;
-    XFontStruct		*xfontstruct;
+    XFontSet             xfontset;
+    XFontStruct         *xfontstruct;
 
-  XRotCharStruct	 per_char[224]; // all chars from 32 to 255
+  XRotCharStruct         per_char[224]; // all chars from 32 to 255
 };
 
 
@@ -64,33 +64,33 @@ extern XRotFontStruct *XRotLoadFont(Display *, int, char *, float);
 extern void XRotUnloadFont(Display *, int, XRotFontStruct *);
 extern int XRotTextWidth(XRotFontStruct *, char *, int);
 extern void XRotDrawString(Display *, int, XRotFontStruct *, Drawable, GC,
-			   int, int, char *, int);
+                           int, int, char *, int);
 extern void XRotDrawAlignedString(Display *, int, XRotFontStruct *, Drawable,
-				  GC, int, int, char *, int);
+                                  GC, int, int, char *, int);
 
 
 /* ---------------------------------------------------------------------- */
 
 
-#define TLEFT	 	 1
-#define TCENTRE	 	 2
-#define TRIGHT	 	 3
-#define MLEFT	 	 4
-#define MCENTRE	 	 5
-#define MRIGHT	 	 6
-#define BLEFT	 	 7
-#define BCENTRE	 	 8
-#define BRIGHT	 	 9
+#define TLEFT            1
+#define TCENTRE          2
+#define TRIGHT           3
+#define MLEFT            4
+#define MCENTRE          5
+#define MRIGHT           6
+#define BLEFT            7
+#define BCENTRE          8
+#define BRIGHT           9
 
 
 /* ---------------------------------------------------------------------- */
 
 
-extern int		 xv_errno;
+extern int               xv_errno;
 
-#define XV_NOFONT	 1  /* no such font on X server */
-#define XV_NOMEM	 2  /* couldn't do malloc */
-#define XV_NOXIMAGE	 3  /* couldn't create an XImage */
+#define XV_NOFONT        1  /* no such font on X server */
+#define XV_NOMEM         2  /* couldn't do malloc */
+#define XV_NOXIMAGE      3  /* couldn't create an XImage */
 
 
 /* ---------------------------------------------------------------------- */
@@ -98,7 +98,7 @@ extern int		 xv_errno;
 
 #else
 
-extern int		 xv_errno;
+extern int               xv_errno;
 
 #endif 
 

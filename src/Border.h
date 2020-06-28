@@ -17,7 +17,7 @@ class WindowManager;
 #define TRANSIENT_FRAME_WIDTH 4
 // NB frameTopHeight = frameHeight-tabTopHeight
 
-class Border {			// friend of client
+class Border {                  // friend of client
 public:
     Border(Client *const, Window child);
     ~Border();
@@ -29,7 +29,7 @@ public:
     void decorate(Boolean active, int w, int h);
     void reparent();
     void configure(int x, int y, int w, int h, unsigned long mask, int detail,
-		   Boolean force = False);
+                   Boolean force = False);
     void moveTo(int x, int y);
 
 //#if CONFIG_MAD_FEEDBACK != 0
@@ -41,8 +41,8 @@ public:
 //#endif
 
     WindowManager *windowManager(); // calls into Client
-    Boolean isTransient();	// calls into Client
-    Boolean isFixedSize();	// calls into Client
+    Boolean isTransient();      // calls into Client
+    Boolean isFixedSize();      // calls into Client
     Window parent() { return m_parent; }
     Boolean hasWindow(Window);
     
@@ -91,15 +91,15 @@ private:
     void shapeParent(int, int);
     void shapeTransientParent(int, int);
     void shapeTab(int, int);
-    void resizeTab(int);	// for rename without changing window size
+    void resizeTab(int);        // for rename without changing window size
     void shapeResize();
 
     int m_prevW;
     int m_prevH;
 
 private:
-    int        m_tabHeight;	// depends on the label
-    static int *m_tabWidth;	// depends on the label font
+    int        m_tabHeight;     // depends on the label
+    static int *m_tabWidth;     // depends on the label font
 #ifdef CONFIG_USE_XFT
     static XftFont *m_tabFont;
     static XftColor *m_xftColour;

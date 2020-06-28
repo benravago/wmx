@@ -1,4 +1,3 @@
-/* -*- c-basic-offset: 4 indent-tabs-mode: nil -*-  vi:set ts=8 sts=4 sw=4: */
 
 #ifndef _MANAGER_H_
 #define _MANAGER_H_
@@ -46,12 +45,12 @@ public:
     int altModMask() { return m_altModMask; }
 
     enum RootCursor {
-	NormalCursor, DeleteCursor, DownCursor, RightCursor, DownrightCursor
+        NormalCursor, DeleteCursor, DownCursor, RightCursor, DownrightCursor
     };
 
 #if CONFIG_USE_WINDOW_GROUPS
     void withdrawGroup(Window groupParent, Client *omit,
-		       Boolean changeState = True);
+                       Boolean changeState = True);
     void hideGroup(Window groupParent, Client *omit);
     void unhideGroup(Window groupParent, Client *omit, Boolean map);
     void killGroup(Window groupParent, Client *omit);
@@ -135,7 +134,7 @@ private:
 
     ClientList m_clients;
     ClientList m_hiddenClients;
-	
+        
     ClientList m_orderedClients[MAX_LAYER + 1]; 
                                     // One list for each netwm/MWM layer
                                     // Layer 4 (NORMAL_LAYER) is the default.
@@ -149,9 +148,9 @@ private:
     int m_currentTime;
 
     int m_channels;
-    int m_currentChannel;	// from 1 to ...
+    int m_currentChannel;       // from 1 to ...
     void flipChannel(Boolean statusOnly, Boolean flipDown,
-		     Boolean quickFlip, Client *push); // bleah!
+                     Boolean quickFlip, Client *push); // bleah!
     Window createNumberWindow(int screen, const char *colour);
     int shapeNumberWindow(Window w, int number, int minDigits); // returns width in pixels
     void instateChannel();
@@ -178,10 +177,10 @@ private:
 
     void circulate(Boolean activeFirst);
 
-    Boolean m_focusChanging;	// checking times for focus change
+    Boolean m_focusChanging;    // checking times for focus change
     Client *m_focusCandidate;
     Window  m_focusCandidateWindow;
-    Time    m_focusTimestamp;	// time of last crossing event
+    Time    m_focusTimestamp;   // time of last crossing event
     Boolean m_focusPointerMoved;
     Boolean m_focusPointerNowStill;
     void checkDelaysForFocus();
@@ -204,7 +203,7 @@ private:
     void setSessionProperties();
 #endif
 
-    void nextEvent(XEvent *);	// return
+    void nextEvent(XEvent *);   // return
 
     void eventButton(XButtonEvent *, XEvent *);
     void eventKeyRelease(XKeyEvent *);

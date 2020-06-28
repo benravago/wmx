@@ -1,4 +1,3 @@
-/* -*- c-basic-offset: 4 indent-tabs-mode: nil -*-  vi:set ts=8 sts=4 sw=4: */
 
 #ifndef _CLIENT_H_
 #define _CLIENT_H_
@@ -23,8 +22,8 @@ public:
 
     /* for call from WindowManager: */
 
-    void activate();		/* active() */
-    void deactivate();		/* setactive(0) */
+    void activate();            /* active() */
+    void deactivate();          /* setactive(0) */
     void gravitate(Boolean invert);
     void installColormap();
     void unreparent();
@@ -34,15 +33,15 @@ public:
     void unhide(Boolean map);
     void rename();
     void kill();
-    void mapRaised();		// without activating
+    void mapRaised();           // without activating
     void lower();
-    void raiseOrLower();	// without activating, raise if it isn't top.
-				// otherwise lower.
+    void raiseOrLower();        // without activating, raise if it isn't top.
+                                // otherwise lower.
 
-    void move(XButtonEvent *);		// event for grab timestamp & coords
+    void move(XButtonEvent *);          // event for grab timestamp & coords
     void resize(XButtonEvent *, Boolean, Boolean);
     void moveOrResize(XButtonEvent *);
-    void ensureVisible();	// make sure x, y are on-screen
+    void ensureVisible();       // make sure x, y are on-screen
 
     // These are the only accepted calls for feedback: the Manager
     // should *not* call directly into the Border
@@ -170,8 +169,8 @@ private:
     int m_bw;
     Window m_wroot;
     int m_screen;
-    Boolean m_doSomething;	// Become true if move() or resize() made
-				// effect to this client.
+    Boolean m_doSomething;      // Become true if move() or resize() made
+                                // effect to this client.
 
     int m_channel;
     Boolean m_unmappedForChannel;
@@ -198,7 +197,7 @@ private:
     int m_protocol;
     Boolean m_managed;
     Boolean m_reparenting;
-    Boolean m_stubborn;		// keeps popping itself to the front
+    Boolean m_stubborn;         // keeps popping itself to the front
     Time m_lastPopTime;
 
     Boolean m_isFullHeight;
@@ -210,7 +209,7 @@ private:
 
     char *m_name;
     char *m_iconName;
-    const char *m_label;	// alias: one of (instance,class,name,iconName)
+    const char *m_label;        // alias: one of (instance,class,name,iconName)
     static const char *const m_defaultLabel;
 
     Colormap m_colormap;
@@ -231,7 +230,7 @@ private:
     void updateFromNetwmProperty(Atom, unsigned char);
     
     // internal instantiation requests
-    Boolean setLabel(void);	// returns True if changed
+    Boolean setLabel(void);     // returns True if changed
     void getColormaps(void);
     void getProtocols(void);
     void getTransient(void);

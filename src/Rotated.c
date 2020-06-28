@@ -77,7 +77,7 @@ static char *my_strtok(char *str1, const char *str2)
   /* this error should never occur ... */
   if (str2 == NULL) {
     fprintf(stderr,
-	    "Fatal error: my_strtok(): recieved null delimiter string\n");
+            "Fatal error: my_strtok(): recieved null delimiter string\n");
     exit(1);
   }
 
@@ -128,7 +128,7 @@ float XRotVersion(char *str, int n)
 /* *** Load the rotated version of a given font *** */
  
 XRotFontStruct *XRotLoadFont(Display *dpy, int screen, 
-			     char *fontname, float angle)
+                             char *fontname, float angle)
 {
   char val;
   XImage *I1, *I2;
@@ -262,8 +262,8 @@ int XRotTextWidth(XRotFontStruct *rotfont, char *str, int len)
 /* *** A front end to XRotPaintString : mimics XDrawString *** */
 
 void XRotDrawString(Display *dpy, int screen, XRotFontStruct *rotfont, 
-		    Drawable drawable,
-		    GC gc, int x, int y, char *str, int len)
+                    Drawable drawable,
+                    GC gc, int x, int y, char *str, int len)
 {            
   static GC my_gc = 0;
   static int lastscreen = -1;
@@ -342,7 +342,7 @@ void XRotDrawString(Display *dpy, int screen, XRotFontStruct *rotfont,
 
   /* create the XImage ... */
   I1 = XCreateImage(dpy, DefaultVisual(dpy, screen), 1, XYBitmap,
-		    0, (char *)vertdata, vert_w, vert_h, 8, 0);
+                    0, (char *)vertdata, vert_w, vert_h, 8, 0);
 
   if (I1 == NULL) {
     xv_errno = XV_NOXIMAGE;
@@ -353,7 +353,7 @@ void XRotDrawString(Display *dpy, int screen, XRotFontStruct *rotfont,
 
   /* extract character from canvas ... */
   XGetSubImage(dpy, canvas, 0, 0,
-	       vert_w, vert_h, 1, XYPixmap, I1, 0, 0);
+               vert_w, vert_h, 1, XYPixmap, I1, 0, 0);
   I1->format = XYBitmap; 
 
   /* width, height of rotated character ... */
@@ -377,7 +377,7 @@ void XRotDrawString(Display *dpy, int screen, XRotFontStruct *rotfont,
 
   /* create the image ... */
   I2 = XCreateImage(dpy, DefaultVisual(dpy, screen), 1, XYBitmap, 0,
-		    (char *)bitdata, bit_w, bit_h, 8, 0); 
+                    (char *)bitdata, bit_w, bit_h, 8, 0); 
 
   if (I2 == NULL) {
     xv_errno = XV_NOXIMAGE;
@@ -392,20 +392,20 @@ void XRotDrawString(Display *dpy, int screen, XRotFontStruct *rotfont,
     for (i = 0; i < bit_w; i++) {
       /* map bits ... */
       if (dir == 1)
-	val = vertdata[i*vert_len + (vert_w-j-1)/8] &
-	  (128>>((vert_w-j-1)%8));
+        val = vertdata[i*vert_len + (vert_w-j-1)/8] &
+          (128>>((vert_w-j-1)%8));
 
       else if (dir == 2)
-	val = vertdata[(vert_h-j-1)*vert_len + (vert_w-i-1)/8] &
-	  (128>>((vert_w-i-1)%8));
-		
+        val = vertdata[(vert_h-j-1)*vert_len + (vert_w-i-1)/8] &
+          (128>>((vert_w-i-1)%8));
+                
       else 
-	val = vertdata[(vert_h-i-1)*vert_len + j/8] & 
-	  (128>>(j%8));
+        val = vertdata[(vert_h-i-1)*vert_len + j/8] & 
+          (128>>(j%8));
     
       if (val) 
-	bitdata[j*bit_len + i/8] = bitdata[j*bit_len + i/8] |
-	  (128>>(i%8));
+        bitdata[j*bit_len + i/8] = bitdata[j*bit_len + i/8] |
+          (128>>(i%8));
     }
   }
 
@@ -419,7 +419,7 @@ void XRotDrawString(Display *dpy, int screen, XRotFontStruct *rotfont,
   XDestroyImage(I1);
   XDestroyImage(I2);
   /*      free((char *)bitdata);  -- XDestroyImage does this
-	  free((char *)vertdata);*/
+          free((char *)vertdata);*/
 
   /* free pixmap and GC ... */
   XFreePixmap(dpy, canvas);
@@ -443,7 +443,7 @@ void XRotDrawString(Display *dpy, int screen, XRotFontStruct *rotfont,
   XSetStipple(dpy, my_gc, image);
   XSetTSOrigin(dpy, my_gc, xp, yp);
   XFillRectangle(dpy, drawable, my_gc, xp, yp,
-		 bit_w, bit_h);
+                 bit_w, bit_h);
 
   XFreePixmap(dpy, image);
 }
@@ -456,8 +456,8 @@ void XRotDrawString(Display *dpy, int screen, XRotFontStruct *rotfont,
 /* *** A front end to XRotPaintAlignedString : uses XRotDrawString *** */
 
 void XRotDrawAlignedString(Display *dpy, int screen, XRotFontStruct *rotfont,
-			   Drawable drawable, GC gc, int x, int y,
-			   char *text, int align)
+                           Drawable drawable, GC gc, int x, int y,
+                           char *text, int align)
 {  
   int xp = 0, yp = 0, dir;
   int i, nl = 1, max_width = 0, this_width;
@@ -482,7 +482,7 @@ void XRotDrawAlignedString(Display *dpy, int screen, XRotFontStruct *rotfont,
     str3 = my_strtok((char *)NULL, str2);
     if (str3 != NULL)
       if (XRotTextWidth(rotfont, str3, strlen(str3))>max_width)
-	max_width = XRotTextWidth(rotfont, str3, strlen(str3));
+        max_width = XRotTextWidth(rotfont, str3, strlen(str3));
   }
   while (str3 != NULL);
  
@@ -497,7 +497,7 @@ void XRotDrawAlignedString(Display *dpy, int screen, XRotFontStruct *rotfont,
 
     else 
       yp = y-(nl-1)/2*rotfont->height + rotfont->max_ascent -
-	rotfont->height/2 - ((nl%2 == 0)?rotfont->height/2:0); 
+        rotfont->height/2 - ((nl%2 == 0)?rotfont->height/2:0); 
   }
 
   else if (dir == 1) {
@@ -509,7 +509,7 @@ void XRotDrawAlignedString(Display *dpy, int screen, XRotFontStruct *rotfont,
 
     else 
       xp = x-(nl-1)/2*rotfont->height + rotfont->max_ascent -
-	rotfont->height/2 - ((nl%2 == 0)?rotfont->height/2:0); 
+        rotfont->height/2 - ((nl%2 == 0)?rotfont->height/2:0); 
   }
 
   else if (dir == 2) {
@@ -521,7 +521,7 @@ void XRotDrawAlignedString(Display *dpy, int screen, XRotFontStruct *rotfont,
      
     else 
       yp = y+(nl-1)/2*rotfont->height - rotfont->max_ascent +
-	rotfont->height/2 + ((nl%2 == 0)?rotfont->height/2:0); 
+        rotfont->height/2 + ((nl%2 == 0)?rotfont->height/2:0); 
   }
 
   else {
@@ -533,7 +533,7 @@ void XRotDrawAlignedString(Display *dpy, int screen, XRotFontStruct *rotfont,
   
     else 
       xp = x+(nl-1)/2*rotfont->height - rotfont->max_ascent +
-	rotfont->height/2 + ((nl%2 == 0)?rotfont->height/2:0); 
+        rotfont->height/2 + ((nl%2 == 0)?rotfont->height/2:0); 
   }
 
   free(str1);
@@ -548,51 +548,51 @@ void XRotDrawAlignedString(Display *dpy, int screen, XRotFontStruct *rotfont,
     /* horizontal alignment ... */
     if (dir == 0) {
       if (align == TLEFT || align == MLEFT || align == BLEFT)
-	xp = x;
+        xp = x;
   
       else if (align == TCENTRE || align == MCENTRE || align == BCENTRE)
-	xp = x-this_width/2;
+        xp = x-this_width/2;
  
       else 
-	xp = x-max_width; 
+        xp = x-max_width; 
     }   
 
     else if (dir == 1) {
       if (align == TLEFT || align == MLEFT || align == BLEFT)
-	yp = y;
+        yp = y;
 
       else if (align == TCENTRE || align == MCENTRE || align == BCENTRE)
-	yp = y+this_width/2;
+        yp = y+this_width/2;
 
       else 
-	yp = y+max_width; 
+        yp = y+max_width; 
     }
 
     else if (dir == 2) {
       if (align == TLEFT || align == MLEFT || align == BLEFT)
-	xp = x;
+        xp = x;
   
       else if (align == TCENTRE || align == MCENTRE || align == BCENTRE)
-	xp = x+this_width/2;
+        xp = x+this_width/2;
  
       else 
-	xp = x+max_width; 
+        xp = x+max_width; 
     }
 
     else {
       if (align == TLEFT || align == MLEFT || align == BLEFT)  
-	yp = y;
+        yp = y;
      
       else if (align == TCENTRE || align == MCENTRE || align == BCENTRE)
-	yp = y-this_width/2;
+        yp = y-this_width/2;
      
       else 
-	yp = y-max_width; 
+        yp = y-max_width; 
     }
 
     /* draw the section ... */
     XRotDrawString(dpy, screen, rotfont, drawable, gc, xp, yp,
-		   str3, strlen(str3));
+                   str3, strlen(str3));
 
     str3 = my_strtok((char *)NULL, str2);
 
