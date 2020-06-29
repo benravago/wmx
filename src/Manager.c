@@ -149,12 +149,6 @@ WindowManager::WindowManager(int argc, char **argv) :
         fprintf(stderr, "\n     Hidden clients only on menu.");
     }
 
-    if (CONFIG_PROD_SHAPE) {
-        fprintf(stderr, "\n     Shape prodding on.");
-    } else {
-        fprintf(stderr, "\n     Shape prodding off.");
-    }
-
     if (CONFIG_MAD_FEEDBACK) {
         fprintf(stderr, "  Skeletal feedback on.");
     } else {
@@ -171,18 +165,6 @@ WindowManager::WindowManager(int argc, char **argv) :
         fprintf(stderr, "  Keyboard menu available.");
     } else {
         fprintf(stderr, "  No keyboard menu available.");
-    }
-
-    if (CONFIG_CHANNEL_SURF) {
-        fprintf(stderr, "\n     Channels on.");
-    } else {
-        fprintf(stderr, "\n     Channels off.");
-    }   
-
-    if (CONFIG_USE_CHANNEL_KEYS) {
-        fprintf(stderr, "  Quick keyboard channel-surf available.");
-    } else {
-        fprintf(stderr, "  No quick keyboard channel-surf.");
     }
 
     fprintf(stderr, "\n     Operating system locale is \"%s\".",
@@ -247,11 +229,6 @@ WindowManager::WindowManager(int argc, char **argv) :
 
     m_currentTime = -1;
     m_activeClient = 0;
-
-    m_channels = 2;
-    m_currentChannel = 1;
-    m_channelChangeTime = 0;
-    m_channelWindow = 0;
 
     Atoms::wm_state      = XInternAtom(m_display, "WM_STATE",            False);
     Atoms::wm_changeState= XInternAtom(m_display, "WM_CHANGE_STATE",     False);
@@ -364,7 +341,7 @@ void WindowManager::release()
         c = m_clients.item(i);
         fprintf(stderr, "release: client %d is %p\n", i, c);
 
-        if (c->isNormal() || c->isNormalButElsewhere()) normalList.append(c);
+        if (c->isNormal()) normalList.append(c);
         else unparentList.append(c);
     }
 
@@ -454,12 +431,10 @@ void WindowManager::initialiseScreen()
   
     m_root = (Window *) malloc(m_screensTotal * sizeof(Window));
     m_defaultColormap = (Colormap *) malloc(m_screensTotal * sizeof(Colormap));
-    m_channelWindow = (Window *) malloc(m_screensTotal * sizeof(Window));
 
     for (i = 0 ; i < m_screensTotal ; i++) {
 
         m_screenNumber = i;
-        m_channelWindow[i] = 0;
 
         m_root[i] = RootWindow(m_display, i);
         m_defaultColormap[i] = DefaultColormap(m_display, i);
@@ -616,10 +591,6 @@ Client *WindowManager::windowToClient(Window w, Boolean create)
         newC = new Client(this, w, bounding_shape==1);
         m_clients.append(newC);
         
-        if (m_currentChannel == m_channels) {
-            createNewChannel();
-        }
-
         return newC;
     }
 }
@@ -717,20 +688,7 @@ void WindowManager::removeFromHiddenList(Client *c)
     for (int i = 0; i < m_hiddenClients.count(); ++i) {
         if (m_hiddenClients.item(i) == c) {
             m_hiddenClients.remove(i);
-
-            if (c->channel() != m_currentChannel) {
-
-                while (c->channel() != m_currentChannel) {
-                    if (m_currentChannel < c->channel()) {
-                        flipChannel(False, False, True, 0);
-                    } else {
-                        flipChannel(False, True, True, 0);
-                    }
-                    XSync(display(), False);
-                }
-            } else {
-                netwmUpdateWindowList(); 
-            }
+            netwmUpdateWindowList(); 
             return;
         }
     }
@@ -961,7 +919,6 @@ void WindowManager::netwmInitialiseCompliance()
          (unsigned char *)supported.array(0, supported.count()),
          supported.count());
 
-    netwmUpdateChannelList();
 }
 
 void WindowManager::updateStackingOrder()
@@ -977,7 +934,7 @@ void WindowManager::updateStackingOrder()
         int top = m_orderedClients[layer].count();
         for (int i = 0; i < top; ++i) {
             Client *c = m_orderedClients[layer].item(i);
-            if (!c->isKilled() && (c->channel()==channel()  || c->isSticky()) && !c->isHidden()) {
+            if (!c->isKilled() || c->isSticky() && !c->isHidden()) {
                 *(windowIter++)=c->parent();
             }
         }
@@ -1068,44 +1025,6 @@ void WindowManager::netwmUpdateStackingOrder()
     delete[] byStacking;   
 }
 
-void WindowManager::netwmUpdateChannelList()
-{
-    int     i;
-    char  **names, s[1024];
-    CARD32  chan;
-   
-    if (m_channels <= 1) return;
-
-    chan = (CARD32) m_channels;
- 
-    XChangeProperty
-        (m_display, m_root[0], Atoms::netwm_desktopCount, XA_CARDINAL, 32, 
-         PropModeReplace, (unsigned char *)&chan, 1);
-
-    // set the names of the channels
-    names = new char*[chan];
-    
-    for (i = 0; i < (int)chan; i++) {
-        snprintf(s, sizeof(s), "Channel %i", i + 1);
-        names[i] = new char [strlen(s) + 1];
-        strcpy(names[i], s);
-    }
-    
-    XTextProperty textProp;
-
-    if (XStringListToTextProperty(names, chan, &textProp)) {
-        XSetTextProperty
-            (m_display, m_root[0], &textProp, Atoms::netwm_desktopNames);
-        XFree(textProp.value);
-    }
-    
-    for (i = 0; i < (int)chan; i++) delete[] names[i];
-
-    delete[] names;
-
-    netwmUpdateCurrentChannel();
-}   
-
 void WindowManager::netwmUpdateActiveClient()
 {
     if (!m_activeClient) return;
@@ -1118,20 +1037,6 @@ void WindowManager::netwmUpdateActiveClient()
         (m_display, m_root[0], Atoms::netwm_activeWindow, XA_WINDOW, 32, 
          PropModeReplace, (unsigned char *)&val, 1);
 }    
-
-void WindowManager::netwmUpdateCurrentChannel()
-{
-    CARD32 val;
-
-    // netwm numbers then 0... not 1...
-    val = (CARD32)(m_currentChannel - 1);
-
-    XChangeProperty
-        (m_display, m_root[0], Atoms::netwm_desktop, XA_CARDINAL, 32, 
-         PropModeReplace, (unsigned char *)&val, 1);
-
-    netwmUpdateWindowList();
-}  
 
 void
 WindowManager::printClientList()

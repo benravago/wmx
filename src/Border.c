@@ -773,11 +773,6 @@ void Border::shapeResize()
 
 void Border::setFrameVisibility(Boolean visible, int w, int h)
 {
-    if (CONFIG_PROD_SHAPE) {
-        shapeParent(w, h);
-        shapeTab(w, h);
-    }
-
     if (isTransient()) {
         setTransientFrameVisibility(visible, w, h);
         return;

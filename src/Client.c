@@ -27,8 +27,6 @@ Client::Client(WindowManager *const wm, Window w, Boolean shaped) :
     m_wroot(None),
     m_screen(0),
     m_doSomething(False),
-    m_channel(0),
-    m_unmappedForChannel(False),
     m_sticky(False),
     m_skipFocus(False),
     m_focusOnClick(False),
@@ -75,32 +73,12 @@ Client::Client(WindowManager *const wm, Window w, Boolean shaped) :
     m_label = NewString(m_defaultLabel);
     m_border = new Border(this, w);
 
-    m_channel = wm->channel();
-    m_unmappedForChannel = False;
-
-    fprintf(stderr, "new client at %d,%d %dx%d, window = %lx, name = \"%s\"\n",
-            m_x, m_y, m_w, m_h, m_window, m_label);
+    fprintf(stderr, "new client at %d,%d %dx%d, window = %lx, name = \"%s\"\n", m_x, m_y, m_w, m_h, m_window, m_label);
     
-//#if CONFIG_MAD_FEEDBACK != 0
     m_speculating = m_levelRaised = False;
-//#endif
 
     if (attr.map_state == IsViewable) manage(True);
     else fprintf(stderr, "not managing this client; it is not viewable\n");
-
-    netwmUpdateChannel();
-
-    if (m_channel != wm->channel()) {
-        fprintf(stderr, "my channel for \"%s\" %d differs from wm channel %d, withdrawing\n", name(), (int)m_channel, (int)wm->channel());
-        if (isNormal()) {
-            if (activeClient() == this) {
-                wm->setActiveClient(0);
-            }
-            m_unmappedForChannel = True;
-            XUnmapWindow(display(), m_window);
-            withdraw(False);
-        }
-    }
 }
 
 
@@ -232,7 +210,7 @@ void Client::manage(Boolean mapped)
         int keycode;
 
         static KeySym keys[] = {
-            CONFIG_FLIP_UP_KEY, CONFIG_FLIP_DOWN_KEY, CONFIG_CIRCULATE_KEY,
+            CONFIG_CIRCULATE_KEY,
             CONFIG_HIDE_KEY, CONFIG_DESTROY_KEY, CONFIG_RAISE_KEY,
             CONFIG_LOWER_KEY, CONFIG_FULLHEIGHT_KEY, CONFIG_NORMALHEIGHT_KEY,
             CONFIG_FULLWIDTH_KEY, CONFIG_NORMALWIDTH_KEY,
@@ -274,16 +252,6 @@ void Client::manage(Boolean mapped)
             }
         }
 
-        if (CONFIG_USE_CHANNEL_KEYS) {
-            for (i = 0; i < 12; ++i) {
-                keycode = XKeysymToKeycode(display(), XK_F1 + i);
-                if (keycode) {
-                    XGrabKey(display(), keycode,
-                             m_windowManager->altModMask(), m_window, True,
-                             GrabModeAsync, GrabModeAsync);
-                }
-            }
-        }
     }
 
     m_iconName = getProperty(XA_WM_ICON_NAME);
@@ -294,7 +262,6 @@ void Client::manage(Boolean mapped)
     getProtocols();
     getTransient();
     getClientType();
-    getChannel();
 
     fprintf(stderr, "managing client, name = \"%s\"\n", m_name);
 
@@ -465,10 +432,6 @@ void Client::gotoClient()
         fprintf(stderr, "Client[%p]::gotoClient: client is killed\n", this);
         return;
     }
-    if (m_channel != windowManager()->channel()) {
-        fprintf(stderr, "Client[%p]::gotoClient: going to channel %d\n", this, (int)m_channel);
-        windowManager()->gotoChannel(m_channel, 0);
-    }
     if (isHidden()) {
         fprintf(stderr, "Client[%p]::gotoClient: unhiding\n", this);
         unhide(True);
@@ -498,8 +461,7 @@ void Client::activate()
         return;
     }
 
-    if (!m_managed || isHidden() || isWithdrawn() ||
-        (m_channel != windowManager()->channel())) return;
+    if (!m_managed || isHidden() || isWithdrawn()) return;
 
     if (isActive()) {
         decorate(True);
@@ -1008,22 +970,6 @@ void Client::getClientType()
     fprintf(stderr, "client window type = %d\n", (int)m_type);
 }
 
-
-void Client::getChannel()
-{
-    int count = 0;
-    char *property = getProperty(Atoms::netwm_winDesktop, XA_CARDINAL, count);
-
-    if (property && count > 0) {
-        m_channel = ((CARD32 *)property)[0] + 1; // netwm counts from 0
-        if (m_channel < 1) m_channel = 1;
-        m_windowManager->ensureChannelExists(m_channel);
-        fprintf(stderr, "channel = %d\n", m_channel);
-        XFree(property);
-    }   
-}
-
-
 void Client::getTransient()
 {
     Window t = None;
@@ -1080,9 +1026,7 @@ void Client::unhide(Boolean map)
     if (map) {
         setState(NormalState);
 
-        if (m_channel == windowManager()->channel()) {
-            XMapWindow(display(), m_window);
-        }
+        XMapWindow(display(), m_window);
         mapRaised();
 
         if (CONFIG_AUTO_RAISE) focusIfAppropriate(False);
@@ -1162,7 +1106,7 @@ void Client::rename()
 
 void Client::mapRaised()
 {
-    if (m_channel == windowManager()->channel()) m_border->map/*Raised*/();
+    m_border->map(); // or mapRaised() ?
     windowManager()->hoistToTop(this);
     windowManager()->raiseTransients(this);
     windowManager()->updateStackingOrder();
@@ -1358,62 +1302,6 @@ void Client::warpPointer()
 }
 
 
-void Client::flipChannel(Boolean leaving, int newChannel)
-{
-    fprintf(stderr, "Client[%p]::flipChannel(leaving = %d, newChannel = %d, my channel = %d)\n", this, (int)leaving, newChannel, m_channel);
-
-    if (m_channel != windowManager()->channel()) {
-
-        if (CONFIG_MAD_FEEDBACK) {
-            if (leaving && m_channel == newChannel &&
-                m_unmappedForChannel) {
-                showFeedback();
-            }
-        }
-
-        return;
-    }
-
-    if (leaving) {
-
-        if (CONFIG_MAD_FEEDBACK) {
-            removeFeedback(isNormal()); // mostly it won't be there anyway, but...
-        }
-
-        if (!isNormal()) return;
-        if (activeClient() == this) {
-            windowManager()->setActiveClient(0);
-        }
-        m_unmappedForChannel = True;
-        XUnmapWindow(display(), m_window);
-        withdraw(False);
-        return;
-
-    } else {
-
-        if (CONFIG_MAD_FEEDBACK) {
-            removeFeedback(isNormal()); // likewise
-        }
-
-        if (!m_unmappedForChannel) {
-            if (isNormal()) mapRaised();
-            return;
-        }
-
-        m_unmappedForChannel = False;
-
-        setState(WithdrawnState);
-        m_border->reparent();
-        if (CONFIG_AUTO_RAISE) m_windowManager->stopConsideringFocus();
-        XAddToSaveSet(display(), m_window);
-        XMapWindow(display(), m_window);
-        setState(NormalState);
-        mapRaised();
-        if (CONFIG_CLICK_TO_FOCUS || isFocusOnClick()) activate();
-    }
-}
-
-
 void Client::showFeedback()
 {
     if (CONFIG_MAD_FEEDBACK) {
@@ -1549,23 +1437,9 @@ void Client::updateFromNetwmProperty(Atom property, unsigned char state) {
     }
 }
 
-void Client::netwmUpdateChannel()
-{
-    CARD32 val;
-
-    // netwm numbers then 0... not 1...
-    val = (CARD32)(channel() - 1);
-
-    fprintf(stderr, "Client::netwmUpdateChannel: setting desktop property on window %lx for client \"%s\" to %d\n", window(), name(), (int)val);
-
-    XChangeProperty(display(), window(), Atoms::netwm_winDesktop,
-                    XA_CARDINAL, 32, 
-                    PropModeReplace, (unsigned char *)&val, 1);
-}
-
 void Client::appendEdges(EdgeRectList &list)
 {
-    if (!m_managed || !isNormal() || isTransient() || m_unmappedForChannel) {
+    if (!m_managed || !isNormal() || isTransient()) {
         return;
     }
     EdgeRect r;
@@ -1612,12 +1486,11 @@ void Client::printClientData()
 
     printf("\n");
 
-    printf("     * Geometry: %dx%d%s%d%s%d - Shaped: %s - Screen: %d - Channel: %d - Layer: %d%s", m_w, m_h,
+    printf("     * Geometry: %dx%d%s%d%s%d - Shaped: %s - Screen: %d - Layer: %d", m_w, m_h,
            (m_x >= 0 ? "+" : ""), m_x,
            (m_y >= 0 ? "+" : ""), m_y,
            m_shaped ? "Y" : "N",
-           m_screen, m_channel, m_layer,
-           m_unmappedForChannel ? " [unmapped]" : "");
+           m_screen, m_layer);
     
     printf("\n     * Transient for: %lx - Group parent: %lx - Revert to: %p (%lx)\n",
            m_transient, m_groupParent, m_revert,

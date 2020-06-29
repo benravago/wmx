@@ -16,7 +16,7 @@
 // I.   Straightforward operational parameters
 // II.  Key bindings
 // III. Colours and fonts
-// IV.  Flashy stuff: channels, pixmaps, skeletal feedback &c.
+// IV.  Flashy stuff: pixmaps, skeletal feedback &c.
 // 
 // All timing values are in milliseconds, but accuracy depends on the
 // minimum timer value available to select, so they should be taken
@@ -94,13 +94,6 @@
 
 #define CONFIG_BUMP_EVERYWHERE    True
 
-// If CONFIG_PROD_SHAPE is True, all frame element shapes will be
-// recalculated afresh every time their focus changes.  This will
-// probably slow things down hideously, but has been reported as
-// necessary on some systems (possibly SunOS 4.x with OpenWindows).
-
-#define CONFIG_PROD_SHAPE         False
-
 // If RESIZE_UPDATE is True, windows will opaque-resize "correctly";
 // if False, behaviour will be as in wm2 (stretching the background
 // image only).
@@ -134,9 +127,8 @@
 // Allow keyboard control?
 #define CONFIG_USE_KEYBOARD       1
 
-// This is the key for wm controls: e.g. Alt/Left and Alt/Right to
-// flip channels, and Alt/Tab to switch windows.  (On my 105-key
-// PC keyboard, Meta_L corresponds to the left Windows key.)
+// This is the key for wm controls: e.g. Alt/Tab to switch windows.
+// (On my 105-key PC keyboard, Meta_L corresponds to the left Windows key.)
 
 #define CONFIG_ALT_KEY            XK_Super_L
 
@@ -144,8 +136,6 @@
 // modifier is pressed; they're keysyms as defined in <X11/keysym.h>
 // and <X11/keysymdef.h>
 
-#define CONFIG_FLIP_UP_KEY        XK_Right
-#define CONFIG_FLIP_DOWN_KEY      XK_Left
 #define CONFIG_HIDE_KEY           XK_Return
 #define CONFIG_STICKY_KEY         XK_Pause
 #define CONFIG_RAISE_KEY          XK_Up
@@ -187,18 +177,8 @@
 // Use this section to remap your mouse button actions.
 //   Button1 = LMB, Button2 = MMB, Button3 = RMB 
 //   Button4 = WheelUp, Button5 = WheelDown 
-// To prevent one or more of these from being supported
-// at all, define it to CONFIG_NO_BUTTON.
-#define CONFIG_NO_BUTTON 999
 #define CONFIG_CLIENTMENU_BUTTON  Button1
 #define CONFIG_COMMANDMENU_BUTTON Button3
-#define CONFIG_CIRCULATE_BUTTON   999 // switch window, when over frame
-#define CONFIG_PREVCHANNEL_BUTTON 999 // flip channel, when over frame
-#define CONFIG_NEXTCHANNEL_BUTTON 999 // flip channel, when over frame
-
-#define CONFIG_RIGHT_CIRCULATE       True
-#define CONFIG_RIGHT_LOWER           False
-#define CONFIG_RIGHT_TOGGLE_HEIGHT   False
 
 
 // ==============================
@@ -234,7 +214,6 @@
 #define CONFIG_FRAME_BACKGROUND   "gray95"
 #define CONFIG_BUTTON_BACKGROUND  "gray95"
 #define CONFIG_BORDERS            "black"
-#define CONFIG_CHANNEL_NUMBER     "green"
 
 #define CONFIG_MENU_FOREGROUND    "black"
 #define CONFIG_MENU_BACKGROUND    "gray80"
@@ -250,31 +229,10 @@
 // Section IV. Flashy stuff
 // ========================
 
-// Set CHANNEL_SURF for multi-channel switching; CHANNEL_CLICK_SIZE is
-// how close you have to middle-button-click to the top-right corner
-// of the root window before the channel change happens.  Set
-// USE_CHANNEL_KEYS if you want Alt-F1, Alt-F2 etc for quick channel
-// changes, provided USE_KEYBOARD is also True.  Set USE_CHANNEL_MENU
-// if you want to change channels via a keyboard-controlled menu
-// instead of linearly up and down one at a time like TV.
-
-#define CONFIG_CHANNEL_SURF       False
-#define CONFIG_CHANNEL_CLICK_SIZE 120
-#define CONFIG_CHANNEL_NUMBER_SIZE 20
-#define CONFIG_USE_CHANNEL_KEYS   False
-#define CONFIG_USE_CHANNEL_MENU   False
-
-// FLIP_DELAY is the length of time the big green number stays in the
-// top-right when flipping channels, before the windows reappear.
-// QUICK_FLIP_DELAY is the equivalent figure used when flipping with
-// the Alt-Fn keys or mouse wheel.  Milliseconds.
-
-#define CONFIG_FLIP_DELAY         1000
-
-// Set MAD_FEEDBACK for skeletal representations of windows when
-// flicking through the client menu and changing channels.  The DELAY
-// is how long skeletal feedback has to persist before wmx decides to
-// post the entire window contents instead; if it's negative, the
+// Set MAD_FEEDBACK for skeletal representations of windows 
+// when flicking through the client menu.
+// The DELAY is how long skeletal feedback has to persist before wmx decides 
+// to post the entire window contents instead; if it's negative, the
 // contents will never be posted.  Experiment with these -- if your
 // machine is fast and you're really hyper, you might even like a
 // delay of 0ms.
@@ -287,6 +245,7 @@
 // Y < 0 top,  Y > 0 bottom, Y = 0 center
 #define CONFIG_GEOMETRY_X_POS     0
 #define CONFIG_GEOMETRY_Y_POS     0
+
 
 #endif
 

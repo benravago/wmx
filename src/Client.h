@@ -85,10 +85,6 @@ public:
   
     ClientType type()       { return m_type; }
 
-    int channel() { return m_channel;  }
-    void flipChannel(Boolean leaving, int newChannel);
-    Boolean isNormalButElsewhere() { return isNormal()||m_unmappedForChannel; }
-    void setChannel(int channel) { m_channel = channel; netwmUpdateChannel(); }
     void setSticky(Boolean sticky);
     void setSkipFocus(Boolean);
     void setFocusOnClick(Boolean);
@@ -139,7 +135,6 @@ public:
 
     void printClientData();
     
-    void netwmUpdateChannel();
     Window window()        { return m_window; }
 
     void appendEdges(EdgeRectList &);
@@ -168,18 +163,14 @@ private:
     Boolean m_doSomething;      // Become true if move() or resize() made
                                 // effect to this client.
 
-    int m_channel;
-    Boolean m_unmappedForChannel;
     Boolean m_sticky;
     Boolean m_skipFocus;
     Boolean m_focusOnClick;
     int m_layer;
     ClientType m_type;
 
-//#if CONFIG_MAD_FEEDBACK != 0
     Boolean m_levelRaised;
     Boolean m_speculating;
-//#endif
 
     XSizeHints m_sizeHints;
     Boolean m_fixedSize;
@@ -231,7 +222,6 @@ private:
     void getProtocols(void);
     void getTransient(void);
     void getClientType(void);
-    void getChannel(void);
 
     void decorate(Boolean active);
 };

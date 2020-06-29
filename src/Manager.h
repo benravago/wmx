@@ -60,11 +60,7 @@ public:
     void releaseGrabKeyMode(XKeyEvent *);
     void spawn(char *, char *);
 
-    int channel() { return m_currentChannel; }
-    int channels() { return m_channels; }
     void setSignalled() { m_looping = False; } // ...
-    void gotoChannel(int channel, Client *push);
-    void ensureChannelExists(int channel);
     
     ClientList &clients() { return m_clients; }
     ClientList &hiddenClients() { return m_hiddenClients; }
@@ -88,8 +84,6 @@ public:
     void netwmUpdateWindowList();
     void netwmUpdateStackingOrder();
     void netwmUpdateActiveClient();
-    void netwmUpdateChannelList();
-    void netwmUpdateCurrentChannel();
 
     // Stupid little helper function
     static int numdigits(int);
@@ -126,18 +120,6 @@ private:
 
     int m_shapeEvent;
     int m_currentTime;
-
-    int m_channels;
-    int m_currentChannel;       // from 1 to ...
-    void flipChannel(Boolean statusOnly, Boolean flipDown,
-                     Boolean quickFlip, Client *push); // bleah!
-    Window createNumberWindow(int screen, const char *colour);
-    int shapeNumberWindow(Window w, int number, int minDigits); // returns width in pixels
-    void instateChannel();
-    void createNewChannel();
-    void checkChannel(int);
-    Time m_channelChangeTime;
-    Window *m_channelWindow;
 
     Boolean m_looping;
     int m_returnCode;

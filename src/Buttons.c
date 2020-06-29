@@ -11,8 +11,6 @@ void WindowManager::eventButton(XButtonEvent *e, XEvent *ev)
     setScreenFromPointer();
     Client *c = windowToClient(e->window);
 
-    // fprintf(stderr, "button event, channel change time == %d\n", (int)m_channelChangeTime);
-
     // We shouldn't be getting button events for non-focusable clients,
     // but we'd better check just in case.
     if (CONFIG_PASS_FOCUS_CLICK || c->isNonFocusable())
@@ -20,44 +18,9 @@ void WindowManager::eventButton(XButtonEvent *e, XEvent *ev)
     else
         XAllowEvents(display(), SyncPointer, e->time);
  
-    bool furniture = (c && ((c->type() == DesktopClient) ||
-                            (c->type() == DockClient)));
+    bool furniture = (c && ((c->type() == DesktopClient) || (c->type() == DockClient)));
 
     // fprintf(stderr, "wmx: client %p for window %p: furniture? %s\n", c, (void *)(e->window), furniture ? "yes" : "no");
-
-    if (!furniture) {
-        if (e->button == CONFIG_CIRCULATE_BUTTON && m_channelChangeTime == 0) {
-            if (CONFIG_RIGHT_CIRCULATE)
-                circulate(e->window == e->root);
-            else if (CONFIG_RIGHT_LOWER)
-            {
-                if (e->window != e->root && c) c->lower();
-            }
-            else if (CONFIG_RIGHT_TOGGLE_HEIGHT)
-            {
-                if (e->window != e->root && c) {
-                    if (c->isFullHeight()) {
-                        c->unmaximise(Vertical);
-                    } else {
-                        c->maximise(Vertical);
-                    }
-                }
-            }
-            return;
-        }
-    }
- 
-    if (!furniture) {
-        if (e->button == CONFIG_NEXTCHANNEL_BUTTON && CONFIG_CHANNEL_SURF) {
-            // wheel "up" - increase channel
-            flipChannel(False, False, True, c);
-            return ;
-        } else if (e->button == CONFIG_PREVCHANNEL_BUTTON && CONFIG_CHANNEL_SURF) {
-            // wheel "down" - decrease channel
-            flipChannel(False, True, True, c);
-            return ;
-        }
-    }
     
     bool effectiveRoot = false;
     if (e->window == e->root) effectiveRoot = true;
@@ -78,48 +41,13 @@ void WindowManager::eventButton(XButtonEvent *e, XEvent *ev)
 
     if (effectiveRoot) {
 
-        if (e->button == CONFIG_CLIENTMENU_BUTTON && m_channelChangeTime == 0) {
-
+        if (e->button == CONFIG_CLIENTMENU_BUTTON) {
             ClientMenu menu(this, (XEvent *)e);
-
-        } else if (e->x > DisplayWidth(display(), screen()) -
-                   CONFIG_CHANNEL_CLICK_SIZE &&
-                   e->y < CONFIG_CHANNEL_CLICK_SIZE) {
-
-            if (e->button == CONFIG_COMMANDMENU_BUTTON) {
-#if CONFIG_USE_CHANNEL_MENU     
-                ChannelMenu(this, (XEvent *)e);
-#else
-                if (m_channelChangeTime == 0) flipChannel(True, False, False, 0);
-                else flipChannel(False, False, False, 0);
-                
-            } else if (e->button == CONFIG_CLIENTMENU_BUTTON && m_channelChangeTime != 0) {
-                
-                flipChannel(False, True, False, 0);
-#endif
-            }
-
-        } else if (e->button == CONFIG_COMMANDMENU_BUTTON && m_channelChangeTime == 0) {
-            // DynamicConfig::config.scan();
+        } else if (e->button == CONFIG_COMMANDMENU_BUTTON) {
             CommandMenu menu(this, (XEvent *)e);
         }
         
     } else if (c && !furniture) {
-
-        if (e->button == CONFIG_COMMANDMENU_BUTTON && CONFIG_CHANNEL_SURF) {
-#if CONFIG_USE_CHANNEL_MENU     
-            ChannelMenu menu(this, (XEvent *)e);
-#else
-            if (m_channelChangeTime == 0) flipChannel(True, False, False, 0);
-            else flipChannel(False, False, False, c);
-#endif
-            return;
-        } else if (e->button == CONFIG_CLIENTMENU_BUTTON && m_channelChangeTime != 0) {
-            fprintf(stderr, "pushing down a channel\n");
-            // allow left-button to push down a channel --cc 19991001
-            flipChannel(False, True, False, c);
-            return;
-        }
 
         c->eventButton(e);
 
@@ -148,7 +76,6 @@ void WindowManager::circulate(Boolean activeFirst)
             i = (direction > 0 ? -1 : m_clients.count());
         } else {
             for (i = 0; i < m_clients.count(); ++i) {
-                if (m_clients.item(i)->channel() != channel()) continue;
                 if (m_clients.item(i) == m_activeClient) break;
             }
 
@@ -159,7 +86,6 @@ void WindowManager::circulate(Boolean activeFirst)
         for (j = i + direction;
              (!m_clients.item(j)->isNormal() ||
                m_clients.item(j)->isTransient() ||
-               m_clients.item(j)->channel() != channel() ||
                m_clients.item(j)->skipsFocus());
              j += direction) {
 
@@ -196,35 +122,18 @@ void WindowManager::eventKeyPress(XKeyEvent *ev)
 
            if (!m_altPressed) {
                // oops! bug
-//               fprintf(stderr, "wmx: Alt key record in inconsistent state\n");
+               // fprintf(stderr, "wmx: Alt key record in inconsistent state\n");
                m_altPressed = True;
                m_altStateRetained = False;
-//        fprintf(stderr, "state is %ld, mask is %ld\n",
-//                (long)ev->state, (long)m_altModMask);
+               // fprintf(stderr, "state is %ld, mask is %ld\n", (long)ev->state, (long)m_altModMask);
            }
 
-           if (key >= XK_F1 && key <= XK_F12 &&
-                CONFIG_CHANNEL_SURF && CONFIG_USE_CHANNEL_KEYS) {
-
-                int channel = key - XK_F1 + 1;
-
-                gotoChannel(channel, 0);
-                
-            } else {
-
+           {
                 // These key names also appear in Client::manage(), so
                 // when adding a key it must be added in both places
 
                 switch (key) {
 
-                case CONFIG_FLIP_DOWN_KEY:
-                    flipChannel(False, True, True, 0);
-                    break;
-
-                case CONFIG_FLIP_UP_KEY:
-                    flipChannel(False, False, True, 0);
-                    break;
-        
                 case CONFIG_CIRCULATE_KEY:
                     circulate(False);
                     break;

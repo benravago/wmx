@@ -175,16 +175,11 @@ void WindowManager::nextEvent(XEvent *e)
         FD_SET(fd, &rfds);
         t.tv_sec = 0; t.tv_usec = 20000;
 
-        if ((r = select(nfds, &rfds, NULL, NULL,
-                        (m_channelChangeTime > 0 || m_focusChanging) ? &t :
-                        (struct timeval *)NULL)) > 0) {
-
+        if ((r = select(nfds, &rfds, NULL, NULL, m_focusChanging ? &t : (struct timeval *)NULL)) > 0) {
             if (FD_ISSET(fd, &rfds)) {
                 XNextEvent(m_display, e);
                 return;
             }
-
-//          return;
         }
 
         if (CONFIG_AUTO_RAISE && m_focusChanging) { // timeout on select
@@ -449,18 +444,14 @@ void Client::eventMapRequest(XMapRequestEvent *)
 
         if (CONFIG_AUTO_RAISE) m_windowManager->stopConsideringFocus();
         XAddToSaveSet(display(), m_window);
-        if (m_channel == windowManager()->channel()) {
-            XMapWindow(display(), m_window);
-        }
+        XMapWindow(display(), m_window);
         mapRaised();
         setState(NormalState);
         if (CONFIG_CLICK_TO_FOCUS || isFocusOnClick()) activate();
         break;
 
     case NormalState:
-        if (m_channel == windowManager()->channel()) {
-            XMapWindow(display(), m_window);
-        }
+        XMapWindow(display(), m_window);
         mapRaised();
         if (CONFIG_CLICK_TO_FOCUS || isFocusOnClick()) activate();
         break;
@@ -484,13 +475,6 @@ void Client::eventUnmap(XUnmapEvent *e)
 {
     if (e->window != m_window) return;
 
-    fprintf(stderr, "Client[%p]::eventUnmap: m_unmappedForChannel = %d, m_state = %d, transient for = %p, m_reparenting = %d\n", this, (int)m_unmappedForChannel, (int)m_state, (void *)transientFor(), (int)m_reparenting);
-
-    if (m_unmappedForChannel) {
-        setState(NormalState);
-        return;
-    }
-
     switch (m_state) {
 
     case IconicState:
@@ -502,7 +486,7 @@ void Client::eventUnmap(XUnmapEvent *e)
 
     case NormalState:
         if (isActive()) m_windowManager->clearFocus();
-        if (!m_reparenting && !m_unmappedForChannel) withdraw();
+        if (!m_reparenting) withdraw();
         break;
     }
 
@@ -573,7 +557,6 @@ void WindowManager::eventDestroy(XDestroyWindowEvent *e)
 
         int there = -1;
 
-        checkChannel(c->channel());
         c->release();
 
         ignoreBadWindowErrors = True;
@@ -587,28 +570,7 @@ void WindowManager::eventDestroy(XDestroyWindowEvent *e)
 void WindowManager::eventClient(XClientMessageEvent *e)
 {
     if (e->message_type == Atoms::netwm_desktop) {
-
-        int channel = (int)e->data.l[0] + 1;
-
-        fprintf(stderr, "NETWM desktop request for channel %d received\n",
-                channel);
-
-        // netwm is not up-to-date and asked us to flip to a 
-        // non-existing channel
-        if (channel > m_channels) {
-            netwmUpdateChannelList();
-            return;
-        }
-
-        // gotoChannel always does something -- even if we're already
-        // on that channel, it will flash up the channel indicator.
-        // We don't want that if we're just responding to a NETWM
-        // request.
-
-        if (channel != m_currentChannel) {
-            gotoChannel(channel, 0);
-        }
-
+        fprintf(stderr, "NETWM desktop request received\n");
         return;
     }
     
@@ -616,7 +578,7 @@ void WindowManager::eventClient(XClientMessageEvent *e)
     if (c)
         c->eventClient(e);
     else
-            fprintf(stderr, "wmx: Received client message for unknown client with window %lx!\n", e->window);
+        fprintf(stderr, "wmx: Received client message for unknown client with window %lx!\n", e->window);
 }
 
 void Client::eventClient(XClientMessageEvent *e)
