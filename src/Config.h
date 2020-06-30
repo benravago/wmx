@@ -5,24 +5,24 @@
 // ============================
 // Configuration header for wmx
 // ============================
-// 
+//
 // To configure: change the relevant bit of the file, and rebuild the
 // manager.  Make sure all necessary source files are built (by
 // running "make depend" before you start).
-// 
+//
 // This file is in four sections.  (This might imply that it's getting
 // too long.)  The sections are:
-// 
+//
 // I.   Straightforward operational parameters
 // II.  Key bindings
 // III. Colours and fonts
 // IV.  Flashy stuff: pixmaps, skeletal feedback &c.
-// 
+//
 // All timing values are in milliseconds, but accuracy depends on the
 // minimum timer value available to select, so they should be taken
 // with a pinch of salt.  On the machine I'm using now, I mentally
 // double all the given values.
-// 
+//
 // -- Chris Cannam, January 1998
 
 
@@ -49,18 +49,12 @@
 // Area where [exit wmx] is added (0 -> everywhere -# -> px from other side)
 #define CONFIG_EXIT_CLICK_SIZE_X 0
 #define CONFIG_EXIT_CLICK_SIZE_Y -3
- 
-// Directory under $HOME in which to look for commands for the
-// middle-button menu
+
+// Directory under $HOME in which to look for commands for the middle-button menu
 #define CONFIG_COMMAND_MENU       ".wmx"
-// only used if COMMAND_MENU is not found; ignored if invalid directory:
-#define CONFIG_SYSTEM_COMMAND_MENU      "/usr/local/lib/wmx/menu"
-// append screennumber to COMMAND_MENU directory;
-// use non screen style as fallback
-#define CONFIG_ADD_SCREEN_TO_COMMAND_MENU False
- 
+
 // Focus possibilities.
-// 
+//
 // You can't have CLICK_TO_FOCUS without RAISE_ON_FOCUS, but the other
 // combinations should be okay.  If you set AUTO_RAISE you must leave
 // the other two False; you'll then get focus-follows, auto-raise, and
@@ -73,7 +67,7 @@
 #define CONFIG_PASS_FOCUS_CLICK   1
 
 // Delays when using AUTO_RAISE focus method
-// 
+//
 // In theory these only apply when using AUTO_RAISE, not when just
 // using RAISE_ON_FOCUS without CLICK_TO_FOCUS.  First of these is the
 // usual delay before raising; second is the delay after the pointer
@@ -157,15 +151,15 @@
 #define CONFIG_CIRCULATE_KEY    XK_Tab
 //#define CONFIG_CIRCULATE_KEY  XK_grave
 //#define CONFIG_CIRCULATE_KEY  XK_section
-#define CONFIG_DESTROY_KEY      XK_BackSpace
+#define CONFIG_DESTROY_KEY      XK_Break
 //#define CONFIG_DESTROY_KEY    XK_Delete
 //#define CONFIG_DESTROY_KEY    XK_Insert
 
 // If WANT_KEYBOARD_MENU is True, then the MENU_KEY, when pressed with
 // the modifier, will call up a client menu with keyboard navigation
 #define CONFIG_WANT_KEYBOARD_MENU       True
-#define CONFIG_CLIENT_MENU_KEY          XK_Menu
-#define CONFIG_COMMAND_MENU_KEY         XK_Multi_key
+#define CONFIG_CLIENT_MENU_KEY          XK_Super_L
+#define CONFIG_COMMAND_MENU_KEY         XK_Super_R
 #define CONFIG_EXIT_ON_KBD_MENU         True
 // these are for navigating on the menu; they don't require a modifier
 #define CONFIG_MENU_UP_KEY      XK_Up
@@ -175,8 +169,8 @@
 
 // Mouse Configuration
 // Use this section to remap your mouse button actions.
-//   Button1 = LMB, Button2 = MMB, Button3 = RMB 
-//   Button4 = WheelUp, Button5 = WheelDown 
+//   Button1 = LMB, Button2 = MMB, Button3 = RMB
+//   Button4 = WheelUp, Button5 = WheelDown
 #define CONFIG_CLIENTMENU_BUTTON  Button1
 #define CONFIG_COMMANDMENU_BUTTON Button3
 
@@ -229,9 +223,9 @@
 // Section IV. Flashy stuff
 // ========================
 
-// Set MAD_FEEDBACK for skeletal representations of windows 
+// Set MAD_FEEDBACK for skeletal representations of windows
 // when flicking through the client menu.
-// The DELAY is how long skeletal feedback has to persist before wmx decides 
+// The DELAY is how long skeletal feedback has to persist before wmx decides
 // to post the entire window contents instead; if it's negative, the
 // contents will never be posted.  Experiment with these -- if your
 // machine is fast and you're really hyper, you might even like a
@@ -246,6 +240,8 @@
 #define CONFIG_GEOMETRY_X_POS     0
 #define CONFIG_GEOMETRY_Y_POS     0
 
+// Clear NumLock on startup
+#define CONFIG_CLEAR_NUMLOCK      True
 
 #endif
 

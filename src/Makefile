@@ -1,7 +1,5 @@
 MAKE=make
 CCC=g++
-prefix=/usr/local
-exec_prefix=${prefix}
 
 LIBS = -lX11 -lXcomposite -lXext -lXft -lfontconfig
 LDFLAGS =

@@ -1,4 +1,3 @@
-
 #ifndef _MANAGER_H_
 #define _MANAGER_H_
 
@@ -9,167 +8,189 @@ class Client;
 declarePList(ClientList, Client);
 
 class WindowManager {
+
 public:
-    WindowManager(int argc, char **argv);
-    ~WindowManager();
+	WindowManager(int argc, char **argv);
+	~WindowManager();
 
-    void fatal(const char *);
+	void fatal(const char*);
 
-    // for call from Client and within:
+	// for call from Client and within:
 
-    Client *windowToClient(Window, Boolean create = False);
-    Client *activeClient() { return m_activeClient; }
-    Boolean raiseTransients(Client *); // true if raised any
-    Time timestamp(Boolean reset);
-    void clearFocus();
+	Client* windowToClient(Window, Boolean create = False);
 
-    void setActiveClient(Client *const c);
+	Client* activeClient() {
+		return m_activeClient;
+	}
 
-    void addToHiddenList(Client *);
-    void removeFromHiddenList(Client *);
-    void skipInRevert(Client *, Client *);
+	Boolean raiseTransients(Client*); // true if raised any
+	Time timestamp(Boolean reset);
+	void clearFocus();
 
-    Display *display() { return m_display; }
-    Window root() { return m_root[screen()]; }
-    Window mroot(int i) { return m_root[i]; }
-    int screen() { return m_screenNumber; }
-    int screensTotal() { return m_screensTotal; }
-    void setScreen(int i) { m_screenNumber = i; }
-    void setScreenFromRoot(Window);
-    void setScreenFromPointer();
+	void setActiveClient(Client *const c);
 
-    int altModMask() { return m_altModMask; }
+	void addToHiddenList(Client*);
+	void removeFromHiddenList(Client*);
+	void skipInRevert(Client*, Client*);
 
-    enum RootCursor {
-        NormalCursor, DeleteCursor, DownCursor, RightCursor, DownrightCursor
-    };
+	Display* display() {
+		return m_display;
+	}
+	Window root() {
+		return m_root[screen()];
+	}
+	Window mroot(int i) {
+		return m_root[i];
+	}
+	int screen() {
+		return m_screenNumber;
+	}
+	int screensTotal() {
+		return m_screensTotal;
+	}
+	void setScreen(int i) {
+		m_screenNumber = i;
+	}
+	void setScreenFromRoot(Window);
+	void setScreenFromPointer();
 
-    void installCursor(RootCursor);
-    void installCursorOnWindow(RootCursor, Window);
-    void installColormap(Colormap);
-    unsigned long allocateColour(int, const char *, const char *);
+	int altModMask() {
+		return m_altModMask;
+	}
 
-    void considerFocusChange(Client *, Window, Time timestamp);
-    void stopConsideringFocus();
+	enum RootCursor {
+		NormalCursor, DeleteCursor, DownCursor, RightCursor, DownrightCursor
+	};
 
-    // shouldn't really be public
-    int attemptGrab(Window, Window, int, int);
-    int attemptGrabKey(Window, int);
-    void releaseGrab(XButtonEvent *);
-    void releaseGrabKeyMode(XButtonEvent *);
-    void releaseGrabKeyMode(XKeyEvent *);
-    void spawn(char *, char *);
+	void installCursor(RootCursor);
+	void installCursorOnWindow(RootCursor, Window);
+	void installColormap(Colormap);
+	unsigned long allocateColour(int, const char*, const char*);
 
-    void setSignalled() { m_looping = False; } // ...
-    
-    ClientList &clients() { return m_clients; }
-    ClientList &hiddenClients() { return m_hiddenClients; }
+	void considerFocusChange(Client*, Window, Time timestamp);
+	void stopConsideringFocus();
 
-    void hoistToTop(Client *);
-    void hoistToBottom(Client *);
-    void removeFromOrderedList(Client *);
-    Boolean isTop(Client *);
-    
-    // Instruct the X-Server to reorder the windows to match our ordering.
-    // Takes account of layering.
-    void updateStackingOrder();    
+	// shouldn't really be public
+	int attemptGrab(Window, Window, int, int);
+	int attemptGrabKey(Window, int);
+	void releaseGrab(XButtonEvent*);
+	void releaseGrabKeyMode(XButtonEvent*);
+	void releaseGrabKeyMode(XKeyEvent*);
+	void spawn(char*, char*);
 
-    // for exposures during client grab, and window map/unmap/destroy
-    // during menu display:
-    void dispatchEvent(XEvent *);
+	void setSignalled() {
+		m_looping = False;
+	} // ...
 
-    // debug output:
-    void printClientList();
+	ClientList& clients() {
+		return m_clients;
+	}
+	ClientList& hiddenClients() {
+		return m_hiddenClients;
+	}
 
-    void netwmUpdateWindowList();
-    void netwmUpdateStackingOrder();
-    void netwmUpdateActiveClient();
+	void hoistToTop(Client*);
+	void hoistToBottom(Client*);
+	void removeFromOrderedList(Client*);
+	Boolean isTop(Client*);
 
-    // Stupid little helper function
-    static int numdigits(int);
+	// Instruct the X-Server to reorder the windows to match our ordering.
+	// Takes account of layering.
+	void updateStackingOrder();
+
+	// for exposures during client grab, and window map/unmap/destroy during menu display:
+	void dispatchEvent(XEvent*);
+
+	// debug output:
+	void printClientList();
+
+	void netwmUpdateWindowList();
+	void netwmUpdateStackingOrder();
+	void netwmUpdateActiveClient();
+
+	// Stupid little helper function
+	static int numdigits(int);
 
 private:
-    int loop();
-    void release();
+	int loop();
+	void release();
 
-    Display *m_display;
-    int m_screenNumber;
-    int m_screensTotal;
-  
-    Window *m_root;
+	Display *m_display;
+	int m_screenNumber;
+	int m_screensTotal;
 
-    Colormap *m_defaultColormap;
-//    int *m_minimumColormaps;
+	Window *m_root;
 
-    Cursor m_cursor;
-    Cursor m_xCursor;
-    Cursor m_vCursor;
-    Cursor m_hCursor;
-    Cursor m_vhCursor;
-    
-    char *m_terminal;
-    char *m_shell;
+	Colormap *m_defaultColormap;
 
-    ClientList m_clients;
-    ClientList m_hiddenClients;
-        
-    ClientList m_orderedClients[MAX_LAYER + 1]; 
-                                    // One list for each netwm/MWM layer
-                                    // Layer 4 (NORMAL_LAYER) is the default.
-    Client *m_activeClient;
+	Cursor m_cursor;
+	Cursor m_xCursor;
+	Cursor m_vCursor;
+	Cursor m_hCursor;
+	Cursor m_vhCursor;
 
-    int m_shapeEvent;
-    int m_currentTime;
+	char *m_terminal;
+	char *m_shell;
 
-    Boolean m_looping;
-    int m_returnCode;
+	ClientList m_clients;
+	ClientList m_hiddenClients;
 
-    static Boolean m_initialising;
-    static int errorHandler(Display *, XErrorEvent *);
-    static void sigHandler(int);
-    static int m_signalled;
-    static int m_restart;
+	ClientList m_orderedClients[MAX_LAYER + 1];
+	// One list for each netwm/MWM layer
+	// Layer 4 (NORMAL_LAYER) is the default.
+	Client *m_activeClient;
 
-    void initialiseScreen();
-    void scanInitialWindows();
+	int m_shapeEvent;
+	int m_currentTime;
 
-    void circulate(Boolean activeFirst);
+	Boolean m_looping;
+	int m_returnCode;
 
-    Boolean m_focusChanging;    // checking times for focus change
-    Client *m_focusCandidate;
-    Window  m_focusCandidateWindow;
-    Time    m_focusTimestamp;   // time of last crossing event
-    Boolean m_focusPointerMoved;
-    Boolean m_focusPointerNowStill;
-    void checkDelaysForFocus();
+	static Boolean m_initialising;
+	static int errorHandler(Display*, XErrorEvent*);
+	static void sigHandler(int);
+	static int m_signalled;
+	static int m_restart;
 
-    void nextEvent(XEvent *);   // return
+	void initialiseScreen();
+	void scanInitialWindows();
 
-    void eventButton(XButtonEvent *, XEvent *);
-    void eventKeyRelease(XKeyEvent *);
-    void eventMapRequest(XMapRequestEvent *);
-    void eventMap(XMapEvent *);
-    void eventConfigureRequest(XConfigureRequestEvent *);
-    void eventUnmap(XUnmapEvent *);
-    void eventCreate(XCreateWindowEvent *);
-    void eventDestroy(XDestroyWindowEvent *);
-    void eventClient(XClientMessageEvent *);
-    void eventColormap(XColormapEvent *);
-    void eventProperty(XPropertyEvent *);
-    void eventEnter(XCrossingEvent *);
-    void eventReparent(XReparentEvent *);
-    void eventFocusIn(XFocusInEvent *);
-    void eventExposure(XExposeEvent *);
+	void circulate(Boolean activeFirst);
 
-    Boolean m_altPressed;
-    Boolean m_altStateRetained;
-    void eventKeyPress(XKeyEvent *);
+	Boolean m_focusChanging; // checking times for focus change
+	Client *m_focusCandidate;
+	Window m_focusCandidateWindow;
+	Time m_focusTimestamp; // time of last crossing event
+	Boolean m_focusPointerMoved;
+	Boolean m_focusPointerNowStill;
+	void checkDelaysForFocus();
 
-    void netwmInitialiseCompliance();
-    Window m_netwmCheckWin;
+	void nextEvent(XEvent*); // return
 
-    int m_altModMask;
+	void eventButton(XButtonEvent*, XEvent*);
+	void eventKeyRelease(XKeyEvent*);
+	void eventMapRequest(XMapRequestEvent*);
+	void eventMap(XMapEvent*);
+	void eventConfigureRequest(XConfigureRequestEvent*);
+	void eventUnmap(XUnmapEvent*);
+	void eventCreate(XCreateWindowEvent*);
+	void eventDestroy(XDestroyWindowEvent*);
+	void eventClient(XClientMessageEvent*);
+	void eventColormap(XColormapEvent*);
+	void eventProperty(XPropertyEvent*);
+	void eventEnter(XCrossingEvent*);
+	void eventReparent(XReparentEvent*);
+	void eventFocusIn(XFocusInEvent*);
+	void eventExposure(XExposeEvent*);
+
+	Boolean m_altPressed;
+	Boolean m_altStateRetained;
+	void eventKeyPress(XKeyEvent*);
+
+	void netwmInitialiseCompliance();
+	Window m_netwmCheckWin;
+
+	int m_altModMask;
 };
 
 #endif
-
