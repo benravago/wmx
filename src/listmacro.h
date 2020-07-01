@@ -87,8 +87,7 @@ void List::move_to_end(long index) { \
     if (!range_check(index, "move_to_end")) return; \
     T temp(m_items[index]); \
     m_items[index].T::~T(); \
-    if (index < m_count-1) memmove(m_items+index, m_items+index+1, \
-                                   (m_count-index-1) * sizeof(T)); \
+    if (index < m_count-1) memmove(m_items+index, m_items+index+1, (m_count-index-1) * sizeof(T)); \
     new (&m_items[m_count-1], this) T(temp); \
 }\
 \

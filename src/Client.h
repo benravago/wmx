@@ -277,7 +277,7 @@ private:
     // accessors
     Boolean getState(int*);
     void setState(int);
-    void setNetwmProperty(Atom, unsigned char, Boolean);
+    void setNetwmProperty(Atom, int, Boolean);
 
     void updateFromNetwmProperty(Atom, unsigned char);
 

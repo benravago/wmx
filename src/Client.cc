@@ -501,7 +501,7 @@ void Client::setFocusOnClick(Boolean focusOnClick) {
     m_focusOnClick = focusOnClick;
 }
 
-void Client::setNetwmProperty(Atom property, unsigned char state, Boolean to) {
+void Client::setNetwmProperty(Atom property, int state, Boolean to) {
     // fprintf(stderr, "wmx: Client::setNetwmProperty needs rewriting\n");
 }
 
